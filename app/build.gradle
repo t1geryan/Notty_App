@@ -66,4 +66,7 @@ dependencies {
     // Android Studio Preview support
     debugImplementation 'androidx.compose.ui:ui-tooling'
     debugImplementation 'androidx.compose.ui:ui-test-manifest'
+
+    // Modules
+    implementation project(":core:mvi")
 }
