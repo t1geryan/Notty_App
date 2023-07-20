@@ -13,7 +13,7 @@ class NoteListViewModel @Inject constructor(
     private val noteListRepository: NoteListRepository,
 ) : ViewModel(), IntentReceiver<NoteListIntent> {
 
-    private val _state = MutableStateFlow(NoteListState())
+    private val _state = MutableStateFlow(NoteListState.loading())
     val state get() = _state.asStateFlow()
 
     override fun receive(intent: NoteListIntent) {

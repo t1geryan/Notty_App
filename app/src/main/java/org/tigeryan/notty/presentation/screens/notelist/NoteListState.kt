@@ -6,10 +6,10 @@ import org.tigeryan.notty.domain.model.Note
 
 @Immutable
 data class NoteListState(
-    val notes: List<Note> = emptyList(),
-    val isLoading: Boolean = false,
-    val isFailed: Boolean = false,
-    val exception: Exception? = null,
+    val notes: List<Note>,
+    val isLoading: Boolean,
+    val isFailed: Boolean,
+    val exception: Exception?,
 ) {
 
     companion object : StateCreator<NoteListState, List<Note>> {
