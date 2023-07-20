@@ -7,7 +7,9 @@ interface NoteListRepository {
 
     fun getAllNotes(): Flow<List<Note>>
 
-    fun getNotesByTitle(title: String): Flow<List<Note>>
+    fun getNotesByInput(input: String): Flow<List<Note>>
+
+    fun getNoteById(id: Long): Flow<Note>
 
     suspend fun addNote(note: Note)
 

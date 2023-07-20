@@ -5,6 +5,7 @@ buildscript {
         compose_material_version = '1.4.3'
         nav_version = '2.6.0'
         hilt_version = '2.44'
+        room_version = '2.5.2'
     }
 }
 
