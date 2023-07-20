@@ -4,11 +4,13 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.DismissDirection
 import androidx.compose.material.DismissValue
 import androidx.compose.material.ExperimentalMaterialApi
@@ -17,8 +19,8 @@ import androidx.compose.material.SwipeToDismiss
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.outlined.Search
+import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.rememberDismissState
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -64,12 +66,12 @@ fun NoteListScreen(
                 actions = listOf(
                     Action(
                         title = stringResource(R.string.search_action_title),
-                        icon = Icons.Default.Search,
+                        icon = Icons.Outlined.Search,
                         onClick = { /*TODO*/ }
                     ),
                     Action(
                         title = stringResource(R.string.settings_action_title),
-                        icon = Icons.Default.Settings,
+                        icon = Icons.Outlined.Settings,
                         onClick = onNavigateToSettings
                     )
                 )
@@ -138,7 +140,12 @@ private fun NoteList(
     LazyColumn(
         modifier = modifier
     ) {
-        itemsIndexed(notes) { _, note ->
+        items(
+            items = notes,
+            key = { note ->
+                note.id
+            }
+        ) { note ->
             val dismissState = rememberDismissState {
                 when (it) {
                     DismissValue.DismissedToStart -> {
@@ -151,37 +158,47 @@ private fun NoteList(
             }
 
             val directions = setOf(DismissDirection.EndToStart)
-            SwipeToDismiss(
-                directions = directions,
-                state = dismissState,
-                dismissThresholds = {
-                    FractionalThreshold(0.75f)
-                },
-                background = {
-                    SwipeBackground(
-                        dismissState = dismissState,
-                        icon = Icons.Default.Delete,
-                        directions = directions,
-                        color = colorScheme.errorContainer,
-                        modifier = Modifier
-                            .fillMaxSize()
-                    )
-                },
+            Column(
                 modifier = Modifier
-                    .padding(
-                        horizontal = MaterialTheme.spacing.small,
-                        vertical = MaterialTheme.spacing.tiny
-                    )
-                    .animateItemPlacement(),
+                    .fillMaxWidth()
             ) {
-                NoteItem(
-                    note = note,
+                SwipeToDismiss(
+                    directions = directions,
+                    state = dismissState,
+                    dismissThresholds = {
+                        FractionalThreshold(0.75f)
+                    },
+                    background = {
+                        SwipeBackground(
+                            dismissState = dismissState,
+                            icon = Icons.Default.Delete,
+                            directions = directions,
+                            shape = shapes.large,
+                            color = colorScheme.errorContainer,
+                            modifier = Modifier
+                                .fillMaxSize()
+                        )
+                    },
+                    modifier = Modifier
+                        .padding(
+                            horizontal = MaterialTheme.spacing.small,
+                            vertical = MaterialTheme.spacing.tiny
+                        )
+                        .animateItemPlacement(),
+                ) {
+                    NoteItem(
+                        note = note,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable {
+                                onNavigateToNote(note.id)
+                            },
+                    )
+                }
+                Spacer(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(bottom = MaterialTheme.spacing.small)
-                        .clickable {
-                            onNavigateToNote(note.id)
-                        }
+                        .height(MaterialTheme.spacing.small),
                 )
             }
         }
