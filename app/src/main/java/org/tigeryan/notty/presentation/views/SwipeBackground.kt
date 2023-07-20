@@ -23,7 +23,8 @@ import org.tigeryan.notty.presentation.theme.spacing
 fun SwipeBackground(
     dismissState: DismissState,
     icon: ImageVector,
-    color: Color,
+    containerColor: Color,
+    contentColor: Color,
     modifier: Modifier = Modifier,
     shape: Shape? = null,
     directions: Set<DismissDirection> = setOf(
@@ -42,14 +43,15 @@ fun SwipeBackground(
     Box(
         modifier = modifier
             .clip(shape ?: RectangleShape)
-            .background(color),
+            .background(containerColor),
         contentAlignment = alignment
     ) {
         Icon(
             imageVector = icon,
             contentDescription = null,
+            tint = contentColor,
             modifier = Modifier
-                .padding(end = MaterialTheme.spacing.small)
+                .padding(end = MaterialTheme.spacing.small),
         )
     }
 }

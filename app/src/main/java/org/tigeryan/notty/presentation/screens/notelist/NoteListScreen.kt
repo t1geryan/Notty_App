@@ -176,7 +176,8 @@ private fun NoteList(
                             icon = Icons.Default.Delete,
                             directions = directions,
                             shape = shapes.large,
-                            color = colorScheme.errorContainer,
+                            containerColor = colorScheme.secondary,
+                            contentColor = colorScheme.onSecondary,
                             modifier = Modifier
                                 .fillMaxSize()
                         )

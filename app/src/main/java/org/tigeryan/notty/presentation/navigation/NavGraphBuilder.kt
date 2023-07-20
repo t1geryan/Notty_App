@@ -24,6 +24,8 @@ internal fun NavGraphBuilder.noteListScreen(
             onSendIntent = viewModel::receive,
             onNavigateToNote = navController::navigateFromNoteListToNote,
             onNavigateToSettings = navController::navigateFromNoteListToSettings,
+            onNavigateToEditor = {},
+            onNavigateToSearch = {}
         )
     }
 }
