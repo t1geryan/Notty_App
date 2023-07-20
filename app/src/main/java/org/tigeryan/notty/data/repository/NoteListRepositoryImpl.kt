@@ -3,7 +3,7 @@ package org.tigeryan.notty.data.repository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import org.tigeryan.notty.data.database.notes.dao.NotesDao
-import org.tigeryan.notty.data.mappers.notes.NoteDomainEntityMapper
+import org.tigeryan.notty.data.mappers.note.NoteDomainEntityMapper
 import org.tigeryan.notty.domain.model.Note
 import org.tigeryan.notty.domain.repository.NoteListRepository
 import javax.inject.Inject

@@ -1,4 +1,4 @@
-package org.tigeryan.notty.data.mappers.notes
+package org.tigeryan.notty.data.mappers.note
 
 import org.tigeryan.notty.data.database.notes.entities.NoteEntity
 import org.tigeryan.notty.domain.model.Note

@@ -4,8 +4,8 @@ import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import org.tigeryan.notty.data.mappers.notes.NoteDomainEntityMapper
-import org.tigeryan.notty.data.mappers.notes.NoteDomainEntityMapperImpl
+import org.tigeryan.notty.data.mappers.note.NoteDomainEntityMapper
+import org.tigeryan.notty.data.mappers.note.NoteDomainEntityMapperImpl
 import javax.inject.Singleton
 
 @Module
