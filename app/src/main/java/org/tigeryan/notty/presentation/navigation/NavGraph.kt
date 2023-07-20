@@ -19,5 +19,6 @@ fun RootNavGraph(
         noteListScreen(rootNavController)
         noteScreen(rootNavController)
         settingsScreen(rootNavController)
+        searchScreen(rootNavController)
     }
 }

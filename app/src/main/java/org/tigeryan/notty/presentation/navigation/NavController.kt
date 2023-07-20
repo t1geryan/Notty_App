@@ -19,3 +19,12 @@ internal fun NavController.navigateFromNoteListToNote(noteId: Long) {
         launchSingleTop = true
     }
 }
+
+internal fun NavController.navigateFromNoteListToSearchScreen() {
+    navigate(
+        route = Route.SEARCH.route,
+    ) {
+        popUpTo(Route.NOTE_LIST.route)
+        launchSingleTop = true
+    }
+}

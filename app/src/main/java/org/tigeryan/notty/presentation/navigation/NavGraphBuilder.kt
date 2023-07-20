@@ -11,6 +11,7 @@ import androidx.navigation.navArgument
 import org.tigeryan.notty.presentation.screens.note.NoteScreen
 import org.tigeryan.notty.presentation.screens.notelist.NoteListScreen
 import org.tigeryan.notty.presentation.screens.notelist.NoteListViewModel
+import org.tigeryan.notty.presentation.screens.search.SearchScreen
 import org.tigeryan.notty.presentation.screens.settings.SettingsScreen
 
 internal fun NavGraphBuilder.noteListScreen(
@@ -25,7 +26,7 @@ internal fun NavGraphBuilder.noteListScreen(
             onNavigateToNote = navController::navigateFromNoteListToNote,
             onNavigateToSettings = navController::navigateFromNoteListToSettings,
             onNavigateToEditor = {},
-            onNavigateToSearch = {}
+            onNavigateToSearch = navController::navigateFromNoteListToSearchScreen,
         )
     }
 }
@@ -55,6 +56,16 @@ internal fun NavGraphBuilder.settingsScreen(
 ) {
     composable(route = Route.SETTINGS.route) {
         SettingsScreen(
+            onNavigateUp = navController::navigateUp,
+        )
+    }
+}
+
+internal fun NavGraphBuilder.searchScreen(
+    navController: NavController,
+) {
+    composable(route = Route.SEARCH.route) {
+        SearchScreen(
             onNavigateUp = navController::navigateUp,
         )
     }

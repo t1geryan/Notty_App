@@ -7,4 +7,6 @@ internal enum class Route(val route: String) {
     NOTE("note_screen"),
 
     SETTINGS("settings_screen"),
+
+    SEARCH("search_screen")
 }
