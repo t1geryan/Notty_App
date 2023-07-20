@@ -56,6 +56,8 @@ import org.tigeryan.notty.presentation.views.SwipeBackground
 fun NoteListScreen(
     state: NoteListState,
     onSendIntent: (NoteListIntent) -> Unit,
+    onNavigateToEditor: () -> Unit,
+    onNavigateToSearch: () -> Unit,
     onNavigateToSettings: () -> Unit,
     onNavigateToNote: (Long) -> Unit,
 ) {
@@ -67,7 +69,7 @@ fun NoteListScreen(
                     Action(
                         title = stringResource(R.string.search_action_title),
                         icon = Icons.Outlined.Search,
-                        onClick = { /*TODO*/ }
+                        onClick = onNavigateToSearch,
                     ),
                     Action(
                         title = stringResource(R.string.settings_action_title),
@@ -79,7 +81,7 @@ fun NoteListScreen(
         },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { /*TODO*/ },
+                onClick = onNavigateToEditor,
                 containerColor = colorScheme.surface,
                 contentColor = colorScheme.onSurface,
                 shape = shapes.extraLarge,

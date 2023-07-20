@@ -20,27 +20,22 @@ class NoteListViewModel @Inject constructor(
     val state get() = _state.asStateFlow()
 
     init {
-        fetchNotes(null)
+        fetchNotes()
     }
 
     override fun receive(intent: NoteListIntent) {
         when (intent) {
-            NoteListIntent.GetAllNotesIntent -> fetchNotes(null)
+            is NoteListIntent.GetAllNotesIntent -> fetchNotes()
             is NoteListIntent.DeleteNoteIntent -> deleteNote(intent.note)
-            is NoteListIntent.GetNotesByTitleIntent -> fetchNotes(intent.title)
         }
     }
 
-    private fun fetchNotes(titleInput: String?) {
+    private fun fetchNotes() {
         viewModelScopeIO.launch {
             _state.apply {
                 value = NoteListState.loading()
                 try {
-                    if (titleInput == null) {
-                        noteListRepository.getAllNotes()
-                    } else {
-                        noteListRepository.getNotesByTitle(titleInput)
-                    }.collect { notes ->
+                    noteListRepository.getAllNotes().collect { notes ->
                         value = NoteListState.success(notes)
                     }
                 } catch (e: Exception) {
