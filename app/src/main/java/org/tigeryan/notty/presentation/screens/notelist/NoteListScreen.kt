@@ -22,6 +22,8 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.rememberDismissState
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -106,7 +108,28 @@ fun NoteListScreen(
                             .align(Alignment.Center),
                     )
                 } else if (isFailed) {
-                    // TODO: add failure block in NoteListScreen
+                    AlertDialog(
+                        onDismissRequest = {},
+                        title = {
+                            Text(
+                                text = stringResource(R.string.notes_loading_error),
+                                style = typography.titleLarge,
+                            )
+                        },
+                        text = {
+                            exception?.message?.let {
+                                Text(
+                                    text = it,
+                                    style = typography.bodyLarge,
+                                )
+                            }
+                        },
+                        confirmButton = {
+                            Button(onClick = { onSendIntent(NoteListIntent.GetAllNotesIntent) }) {
+                                Text(text = stringResource(R.string.try_again))
+                            }
+                        },
+                    )
                 } else {
                     if (notes.isEmpty()) {
                         ImageWithTextBelow(
