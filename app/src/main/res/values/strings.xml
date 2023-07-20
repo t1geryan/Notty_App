@@ -1,3 +1,13 @@
 <resources>
+    <!--App name and screens titles-->
     <string name="app_name">Notty</string>
+    <string name="note_list_screen_title">Notes</string>
+
+    <!--Note List screen-->
+    <string name="no_notes_message">Create your first note!</string>
+
+    <!--Icon and actions titles and descriptions-->
+    <string name="search_action_title">Search</string>
+    <string name="settings_action_title">Settings</string>
+    <string name="create_note_icon_description">Create Note</string>
 </resources>
