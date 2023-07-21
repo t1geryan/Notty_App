@@ -22,5 +22,5 @@ interface NotesDao {
     suspend fun deleteNoteById(id: Long)
 
     @Upsert
-    suspend fun upsertNote(noteEntity: NoteEntity)
+    suspend fun upsertNote(noteEntity: NoteEntity): Long
 }

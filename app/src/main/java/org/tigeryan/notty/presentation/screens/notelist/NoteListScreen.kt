@@ -252,13 +252,13 @@ private fun NoteItem(
                 .padding(MaterialTheme.spacing.medium)
         ) {
             Text(
-                text = note.title,
+                text = note.noteData.title,
                 style = typography.titleLarge.copy(fontWeight = FontWeight.Bold),
                 maxLines = MaterialTheme.dimens.singleTextLinesCount,
                 overflow = TextOverflow.Ellipsis,
             )
             Text(
-                text = note.text,
+                text = note.noteData.text,
                 style = typography.bodyLarge,
                 maxLines = MaterialTheme.dimens.smallTextLinesCount,
                 overflow = TextOverflow.Ellipsis,

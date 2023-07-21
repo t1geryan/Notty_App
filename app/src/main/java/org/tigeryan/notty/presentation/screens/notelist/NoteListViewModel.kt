@@ -48,7 +48,7 @@ class NoteListViewModel @Inject constructor(
 
     private fun deleteNote(note: Note) {
         viewModelScopeIO.launch {
-            noteListRepository.deleteNote(note)
+            noteListRepository.deleteNoteById(note.id)
         }
     }
 }

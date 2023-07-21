@@ -2,6 +2,7 @@ package org.tigeryan.notty.domain.repository
 
 import kotlinx.coroutines.flow.Flow
 import org.tigeryan.notty.domain.model.Note
+import org.tigeryan.notty.domain.model.NoteData
 
 interface NoteListRepository {
 
@@ -11,9 +12,9 @@ interface NoteListRepository {
 
     fun getNoteById(id: Long): Flow<Note>
 
-    suspend fun addNote(note: Note)
+    suspend fun addNote(noteData: NoteData): Long
 
-    suspend fun deleteNote(note: Note)
+    suspend fun deleteNoteById(id: Long)
 
-    suspend fun updateNode(note: Note)
+    suspend fun updateNote(note: Note)
 }

@@ -2,6 +2,7 @@ package org.tigeryan.notty.data.mappers.note
 
 import org.tigeryan.notty.data.database.notes.entities.NoteEntity
 import org.tigeryan.notty.domain.model.Note
+import org.tigeryan.notty.domain.model.NoteData
 import org.tigeryan.notty.utils.BidirectionalMapper
 import javax.inject.Inject
 
@@ -18,8 +19,8 @@ class NoteDomainEntityMapperImpl @Inject constructor() : NoteDomainEntityMapper 
     override fun map(valueToMap: Note) = with(valueToMap) {
         NoteEntity(
             id = id,
-            text = text,
-            title = title,
+            text = noteData.text,
+            title = noteData.title,
         )
     }
 
@@ -29,8 +30,10 @@ class NoteDomainEntityMapperImpl @Inject constructor() : NoteDomainEntityMapper 
     override fun reverseMap(valueToMap: NoteEntity) = with(valueToMap) {
         Note(
             id = id,
-            text = text,
-            title = title,
+            noteData = NoteData(
+                text = text,
+                title = title,
+            )
         )
     }
 }

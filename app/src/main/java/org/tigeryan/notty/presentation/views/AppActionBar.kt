@@ -48,8 +48,8 @@ fun TopAppBarDefaults.backgroundActionBarColors() = smallTopAppBarColors(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppActionBar(
-    title: String,
     modifier: Modifier = Modifier,
+    title: String? = null,
     navigationAction: Action? = null,
     actions: List<Action> = emptyList(),
     windowInsets: WindowInsets = TopAppBarDefaults.windowInsets,
@@ -58,19 +58,31 @@ fun AppActionBar(
 ) {
     TopAppBar(
         title = {
-            Text(
-                text = title,
-                style = MaterialTheme.typography.headlineLarge
-            )
+            title?.let {
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.headlineLarge,
+                    modifier = if (navigationAction == null) Modifier else Modifier.padding(start = MaterialTheme.spacing.small)
+                )
+            }
         },
         navigationIcon = {
             navigationAction?.let {
-                ActionIcon(action = it)
+                ActionIcon(
+                    action = it,
+                    modifier = Modifier
+                        .padding(start = MaterialTheme.spacing.small),
+
+                    )
             }
         },
         actions = {
             actions.forEach { action ->
-                ActionIcon(action = action)
+                ActionIcon(
+                    action = action,
+                    modifier = Modifier
+                        .padding(end = MaterialTheme.spacing.small),
+                )
             }
         },
         colors = colors,
@@ -83,11 +95,11 @@ fun AppActionBar(
 @Composable
 private fun ActionIcon(
     action: Action,
+    modifier: Modifier = Modifier,
 ) {
     IconButton(
         onClick = action.onClick,
-        modifier = Modifier
-            .padding(end = MaterialTheme.spacing.small)
+        modifier = modifier
             .clip(MaterialTheme.shapes.large)
             .background(MaterialTheme.colorScheme.surface),
     ) {

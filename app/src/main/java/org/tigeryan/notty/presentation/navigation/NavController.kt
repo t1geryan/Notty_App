@@ -11,7 +11,7 @@ internal fun NavController.navigateFromNoteListToSettings() {
     }
 }
 
-internal fun NavController.navigateFromNoteListToNote(noteId: Long) {
+internal fun NavController.navigateFromNoteListToNote(noteId: Long? = null) {
     navigate(
         route = "${Route.NOTE.route}/$noteId",
     ) {
