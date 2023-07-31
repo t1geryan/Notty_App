@@ -5,14 +5,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.staticCompositionLocalOf
 
-data class Dimen(
+data class Dimens(
     val singleTextLinesCount: Int = 1,
     val smallTextLinesCount: Int = 3,
 )
 
-val LocalDimen = staticCompositionLocalOf { Dimen() }
+val LocalDimens = staticCompositionLocalOf { Dimens() }
 
-val MaterialTheme.dimens: Dimen
+val MaterialTheme.dimens: Dimens
     @Composable
     @ReadOnlyComposable
-    get() = LocalDimen.current
+    get() = LocalDimens.current
