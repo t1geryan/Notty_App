@@ -54,6 +54,7 @@ fun NottyTheme(
             val window = (view.context as Activity).window
             val decorView = window.decorView
             window.statusBarColor = colorScheme.background.toArgb()
+            window.navigationBarColor = colorScheme.background.toArgb()
             if (!darkTheme)
                 decorView.windowInsetsController?.setSystemBarsAppearance(
                     APPEARANCE_LIGHT_STATUS_BARS,
