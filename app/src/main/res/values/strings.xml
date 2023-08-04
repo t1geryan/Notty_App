@@ -2,6 +2,7 @@
     <!--App name and screens titles-->
     <string name="app_name">Notty</string>
     <string name="note_list_screen_title">Notes</string>
+    <string name="settings_screen_title">Settings</string>
 
     <!--Note List screen-->
     <string name="no_notes_message">Create your first note!</string>
@@ -10,6 +11,12 @@
     <!--Note Screen-->
     <string name="title_input_hint">Title</string>
     <string name="text_input_hint">Text</string>
+
+    <!--Settings Screen-->
+    <string name="app_theme_setting_title">App Theme</string>
+    <string name="app_theme_setting_day">Day Theme</string>
+    <string name="app_theme_setting_night">Night Theme</string>
+    <string name="app_theme_setting_system">System Theme</string>
 
     <!--Icon and actions titles and descriptions-->
     <string name="navigate_up_action_title">Navigate Up</string>
