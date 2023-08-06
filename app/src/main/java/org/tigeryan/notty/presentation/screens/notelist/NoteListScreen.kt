@@ -24,8 +24,6 @@ import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.rememberDismissState
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
@@ -42,15 +40,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import org.tigeryan.notty.R
 import org.tigeryan.notty.domain.model.Note
-import org.tigeryan.notty.presentation.theme.dimens
 import org.tigeryan.notty.presentation.theme.spacing
 import org.tigeryan.notty.presentation.views.Action
 import org.tigeryan.notty.presentation.views.AppActionBar
 import org.tigeryan.notty.presentation.views.ImageWithTextBelow
+import org.tigeryan.notty.presentation.views.NoteItem
 import org.tigeryan.notty.presentation.views.SwipeBackground
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -227,42 +223,6 @@ private fun NoteList(
                         .height(MaterialTheme.spacing.small),
                 )
             }
-        }
-    }
-}
-
-@Composable
-private fun NoteItem(
-    note: Note,
-    modifier: Modifier = Modifier,
-) {
-    Card(
-        colors = CardDefaults.cardColors(
-            containerColor = colorScheme.primaryContainer,
-            contentColor = colorScheme.onPrimaryContainer,
-            disabledContainerColor = colorScheme.primaryContainer,
-            disabledContentColor = colorScheme.onPrimaryContainer,
-        ),
-        shape = shapes.large,
-        modifier = modifier,
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(MaterialTheme.spacing.medium)
-        ) {
-            Text(
-                text = note.noteData.title,
-                style = typography.titleLarge.copy(fontWeight = FontWeight.Bold),
-                maxLines = MaterialTheme.dimens.singleTextLinesCount,
-                overflow = TextOverflow.Ellipsis,
-            )
-            Text(
-                text = note.noteData.text,
-                style = typography.bodyLarge,
-                maxLines = MaterialTheme.dimens.smallTextLinesCount,
-                overflow = TextOverflow.Ellipsis,
-            )
         }
     }
 }

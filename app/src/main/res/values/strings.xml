@@ -8,6 +8,9 @@
     <string name="no_notes_message">Create your first note!</string>
     <string name="notes_loading_error">An error occurred while loading notes</string>
 
+    <!--Search Screen-->
+    <string name="no_notes_found_message">Note not found. Try searching again.</string>
+
     <!--Note Screen-->
     <string name="title_input_hint">Title</string>
     <string name="text_input_hint">Text</string>
