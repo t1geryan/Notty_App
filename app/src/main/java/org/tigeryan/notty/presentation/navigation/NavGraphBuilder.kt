@@ -18,6 +18,7 @@ import org.tigeryan.notty.presentation.screens.note.NoteViewModel
 import org.tigeryan.notty.presentation.screens.notelist.NoteListScreen
 import org.tigeryan.notty.presentation.screens.notelist.NoteListViewModel
 import org.tigeryan.notty.presentation.screens.search.SearchScreen
+import org.tigeryan.notty.presentation.screens.search.SearchViewModel
 import org.tigeryan.notty.presentation.screens.settings.SettingsScreen
 
 internal fun NavGraphBuilder.noteListScreen(
@@ -81,7 +82,12 @@ internal fun NavGraphBuilder.searchScreen(
     navController: NavController,
 ) {
     composable(route = Route.SEARCH.route) {
+        val viewModel: SearchViewModel = hiltViewModel()
+        val state by viewModel.state.collectAsStateWithLifecycle()
         SearchScreen(
+            state = state,
+            onSendIntent = viewModel::receive,
+            onNavigateToNote = navController::navigateFromSearchScreenToNote,
             onNavigateUp = navController::navigateUp,
         )
     }

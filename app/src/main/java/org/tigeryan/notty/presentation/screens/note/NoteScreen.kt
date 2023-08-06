@@ -38,6 +38,7 @@ fun NoteScreen(
     Scaffold(
         topBar = {
             AppActionBar(
+                title = null,
                 navigationAction = Action.navigateUpAction(
                     title = stringResource(id = R.string.navigate_up_action_title),
                     onClick = {

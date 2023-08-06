@@ -4,7 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -30,7 +30,7 @@ data class Action(
         fun navigateUpAction(title: String, onClick: () -> Unit) = Action(
             title = title,
             onClick = onClick,
-            icon = Icons.Default.ArrowBack,
+            icon = Icons.Outlined.ArrowBack,
         )
     }
 }
@@ -56,7 +56,8 @@ fun AppActionBar(
     colors: TopAppBarColors = TopAppBarDefaults.backgroundActionBarColors(),
     scrollBehavior: TopAppBarScrollBehavior? = null,
 ) {
-    TopAppBar(
+    AppActionBar(
+        modifier = modifier,
         title = {
             title?.let {
                 Text(
@@ -66,6 +67,27 @@ fun AppActionBar(
                 )
             }
         },
+        navigationAction = navigationAction,
+        actions = actions,
+        windowInsets = windowInsets,
+        colors = colors,
+        scrollBehavior = scrollBehavior,
+    )
+}
+
+@Composable
+@OptIn(ExperimentalMaterial3Api::class)
+fun AppActionBar(
+    modifier: Modifier = Modifier,
+    title: @Composable () -> Unit = {},
+    navigationAction: Action? = null,
+    actions: List<Action> = emptyList(),
+    windowInsets: WindowInsets = TopAppBarDefaults.windowInsets,
+    colors: TopAppBarColors = TopAppBarDefaults.backgroundActionBarColors(),
+    scrollBehavior: TopAppBarScrollBehavior? = null,
+) {
+    TopAppBar(
+        title = title,
         navigationIcon = {
             navigationAction?.let {
                 ActionIcon(
