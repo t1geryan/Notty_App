@@ -2,13 +2,12 @@ package org.tigeryan.notty.presentation.screens.settings.views
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredHeightIn
 import androidx.compose.material.DropdownMenuItem
-import androidx.compose.material.IconButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ExpandLess
 import androidx.compose.material.icons.outlined.ExpandMore
@@ -28,18 +27,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import org.tigeryan.notty.presentation.theme.NottyTheme
+import org.tigeryan.notty.presentation.theme.dimens
 import org.tigeryan.notty.presentation.theme.spacing
 import org.tigeryan.notty.utils.extensions.rememberMutableStateOf
 
-data class SettingDropdownMenuModel(
+data class DropdownMenuSettingModel(
     val title: String,
     val currentIndex: Int = 0,
     val values: List<String>
 )
 
 @Composable
-internal fun SettingDropdownMenu(
-    model: SettingDropdownMenuModel,
+internal fun DropdownMenuSetting(
+    model: DropdownMenuSettingModel,
     modifier: Modifier = Modifier,
     onItemSelected: ((Int) -> Unit)? = null,
 ) {
@@ -55,47 +55,36 @@ internal fun SettingDropdownMenu(
     Column(
         modifier = modifier,
     ) {
-        Box(
+        Row(
             modifier = Modifier
                 .background(containerColor)
                 .fillMaxWidth()
-        ) {
-            Row(
-                Modifier
-                    .clickable {
-                        isDropdownOpen = true
-                    }
-                    .padding(MaterialTheme.spacing.medium),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Text(
-                    modifier = Modifier
-                        .weight(1f)
-                        .padding(end = MaterialTheme.spacing.medium),
-                    text = model.title,
-                    style = typography.bodyLarge,
-                    color = contentColor,
-                )
-
-                Text(
-                    text = model.values[currentPosition],
-                    style = typography.bodyLarge,
-                    color = contentColorAlpha,
-                )
-
-                IconButton(
-                    onClick = { isDropdownOpen = !isDropdownOpen },
-                ) {
-                    Icon(
-                        imageVector = if (isDropdownOpen) Icons.Outlined.ExpandLess else Icons.Outlined.ExpandMore,
-                        contentDescription = null,
-                        tint = contentColorAlpha,
-                    )
+                .requiredHeightIn(min = MaterialTheme.dimens.minClickableSize)
+                .clickable {
+                    isDropdownOpen = true
                 }
-
-            }
+                .padding(MaterialTheme.spacing.medium),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(end = MaterialTheme.spacing.medium),
+                text = model.title,
+                style = typography.bodyLarge,
+                color = contentColor,
+            )
+            Text(
+                text = model.values[currentPosition],
+                style = typography.bodyLarge,
+                color = contentColorAlpha,
+            )
+            Icon(
+                imageVector = if (isDropdownOpen) Icons.Outlined.ExpandLess else Icons.Outlined.ExpandMore,
+                contentDescription = null,
+                tint = contentColorAlpha,
+            )
         }
-
         Divider(
             thickness = Dp.Hairline,
             color = contentColorAlpha,
@@ -133,8 +122,8 @@ fun SettingDropdownMenuDarkPreview() {
     NottyTheme(
         darkTheme = true
     ) {
-        SettingDropdownMenu(
-            model = SettingDropdownMenuModel(
+        DropdownMenuSetting(
+            model = DropdownMenuSettingModel(
                 title = "App Theme",
                 values = listOf(
                     "System Theme",
@@ -152,8 +141,8 @@ fun SettingDropdownMenuLightPreview() {
     NottyTheme(
         darkTheme = false,
     ) {
-        SettingDropdownMenu(
-            model = SettingDropdownMenuModel(
+        DropdownMenuSetting(
+            model = DropdownMenuSettingModel(
                 title = "App Theme",
                 values = listOf(
                     "System Theme",

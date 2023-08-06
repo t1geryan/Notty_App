@@ -6,6 +6,8 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import org.tigeryan.notty.data.mappers.note.NoteDomainEntityMapper
 import org.tigeryan.notty.data.mappers.note.NoteDomainEntityMapperImpl
+import org.tigeryan.notty.data.mappers.settings.AppThemeDomainEntityMapper
+import org.tigeryan.notty.data.mappers.settings.AppThemeDomainEntityMapperImpl
 import javax.inject.Singleton
 
 @Module
@@ -17,4 +19,10 @@ abstract class MappersModule {
     abstract fun bindsNoteMapper(
         noteDomainEntityMapperImpl: NoteDomainEntityMapperImpl
     ): NoteDomainEntityMapper
+
+    @Binds
+    @Singleton
+    abstract fun bindsAppThemeMapper(
+        appThemeDomainEntityMapperImpl: AppThemeDomainEntityMapperImpl
+    ): AppThemeDomainEntityMapper
 }
