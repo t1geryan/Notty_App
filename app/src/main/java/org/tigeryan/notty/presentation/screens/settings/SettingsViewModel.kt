@@ -16,13 +16,13 @@ class SettingsViewModel @Inject constructor(
     private val settingsRepository: SettingsRepository,
 ) : ViewModel(), IntentReceiver<SettingsIntent> {
 
-    private val _state = MutableStateFlow<SettingsState>(SettingsState.Loading)
+    private val _state = MutableStateFlow<SettingsState>(SettingsState(isLoading = true))
     val state get() = _state.asStateFlow()
 
     init {
         viewModelScopeIO.launch {
             settingsRepository.getCurrentAppTheme().collect { appTheme ->
-                _state.value = SettingsState.Success(appTheme)
+                _state.value = _state.value.copy(settings = Settings(appTheme), isLoading = false)
             }
         }
     }

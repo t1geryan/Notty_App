@@ -47,15 +47,14 @@ fun SettingsScreen(
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
-            when (state) {
-                is SettingsState.Loading -> {
+            with(state) {
+                if (isLoading) {
                     CircularProgressIndicator(
                         modifier = Modifier
                             .align(Alignment.Center),
                     )
-                }
+                } else {
 
-                is SettingsState.Success -> {
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -63,7 +62,7 @@ fun SettingsScreen(
                         DropdownMenuSetting(
                             model = DropdownMenuSettingModel(
                                 title = stringResource(R.string.app_theme_setting_title),
-                                currentIndex = state.appTheme.ordinal,
+                                currentIndex = settings.appTheme.ordinal,
                                 values = listOf(
                                     stringResource(R.string.app_theme_setting_day),
                                     stringResource(R.string.app_theme_setting_night),
