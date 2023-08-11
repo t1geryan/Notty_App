@@ -1,6 +1,7 @@
 package org.tigeryan.notty.presentation.screens.notelist
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -9,7 +10,6 @@ import org.tigeryan.mvi.IntentReceiver
 import org.tigeryan.notty.domain.model.Note
 import org.tigeryan.notty.domain.usecase.DeleteNoteUseCase
 import org.tigeryan.notty.domain.usecase.GetNotesUseCase
-import org.tigeryan.notty.utils.extensions.viewModelScopeIO
 import javax.inject.Inject
 
 @HiltViewModel
@@ -33,7 +33,7 @@ class NoteListViewModel @Inject constructor(
     }
 
     private fun fetchNotes() {
-        viewModelScopeIO.launch {
+        viewModelScope.launch {
             _state.apply {
                 value = NoteListState.loading()
                 try {
@@ -49,7 +49,7 @@ class NoteListViewModel @Inject constructor(
 
 
     private fun deleteNote(note: Note) {
-        viewModelScopeIO.launch {
+        viewModelScope.launch {
             deleteNoteUseCase(note.id)
         }
     }

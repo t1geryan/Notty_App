@@ -1,6 +1,7 @@
 package org.tigeryan.notty.presentation.screens.search
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -8,7 +9,6 @@ import kotlinx.coroutines.launch
 import org.tigeryan.mvi.IntentReceiver
 import org.tigeryan.notty.domain.model.NoteInputFilter
 import org.tigeryan.notty.domain.usecase.GetNotesUseCase
-import org.tigeryan.notty.utils.extensions.viewModelScopeIO
 import javax.inject.Inject
 
 @HiltViewModel
@@ -27,7 +27,7 @@ class SearchViewModel @Inject constructor(
     }
 
     private fun fetchNotesByInput(input: String) {
-        viewModelScopeIO.launch {
+        viewModelScope.launch {
             with(_state) {
                 value = SearchState.loading()
                 try {

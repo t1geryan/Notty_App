@@ -2,6 +2,7 @@ package org.tigeryan.notty.presentation.screens.note
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -15,7 +16,6 @@ import org.tigeryan.notty.domain.usecase.DeleteNoteUseCase
 import org.tigeryan.notty.domain.usecase.GetNoteByIdUseCase
 import org.tigeryan.notty.domain.usecase.SaveNoteUseCase
 import org.tigeryan.notty.utils.extensions.tryEmitFlow
-import org.tigeryan.notty.utils.extensions.viewModelScopeIO
 
 class NoteViewModel @AssistedInject constructor(
     @Assisted private var noteId: Long?,
@@ -29,8 +29,8 @@ class NoteViewModel @AssistedInject constructor(
 
     init {
         noteId?.let { id ->
-            viewModelScopeIO.launch {
-                tryEmitFlow(viewModelScopeIO) {
+            viewModelScope.launch {
+                tryEmitFlow(viewModelScope) {
                     val note = getNoteByIdUseCase(id).first()
                     _state.apply {
                         value = NoteState(
@@ -67,7 +67,7 @@ class NoteViewModel @AssistedInject constructor(
 
     private fun saveNote() {
         val (title, text) = state.value
-        viewModelScopeIO.launch {
+        viewModelScope.launch {
             noteId = saveNoteUseCase(
                 noteData = NoteData(title, text),
                 id = noteId
@@ -77,7 +77,7 @@ class NoteViewModel @AssistedInject constructor(
 
     private fun deleteNote() {
         noteId?.let {
-            viewModelScopeIO.launch {
+            viewModelScope.launch {
                 deleteNoteUseCase(it)
             }
         }

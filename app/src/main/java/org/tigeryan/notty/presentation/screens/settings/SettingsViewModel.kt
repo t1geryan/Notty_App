@@ -1,6 +1,7 @@
 package org.tigeryan.notty.presentation.screens.settings
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -8,7 +9,6 @@ import kotlinx.coroutines.launch
 import org.tigeryan.mvi.IntentReceiver
 import org.tigeryan.notty.domain.model.AppTheme
 import org.tigeryan.notty.domain.repository.SettingsRepository
-import org.tigeryan.notty.utils.extensions.viewModelScopeIO
 import javax.inject.Inject
 
 @HiltViewModel
@@ -16,11 +16,11 @@ class SettingsViewModel @Inject constructor(
     private val settingsRepository: SettingsRepository,
 ) : ViewModel(), IntentReceiver<SettingsIntent> {
 
-    private val _state = MutableStateFlow<SettingsState>(SettingsState(isLoading = true))
+    private val _state = MutableStateFlow(SettingsState(isLoading = true))
     val state get() = _state.asStateFlow()
 
     init {
-        viewModelScopeIO.launch {
+        viewModelScope.launch {
             settingsRepository.getCurrentAppTheme().collect { appTheme ->
                 _state.value = _state.value.copy(settings = Settings(appTheme), isLoading = false)
             }
@@ -33,7 +33,9 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
-    private fun setAppTheme(appTheme: AppTheme) = viewModelScopeIO.launch {
-        settingsRepository.setAppTheme(appTheme)
+    private fun setAppTheme(appTheme: AppTheme) {
+        viewModelScope.launch {
+            settingsRepository.setAppTheme(appTheme)
+        }
     }
 }
