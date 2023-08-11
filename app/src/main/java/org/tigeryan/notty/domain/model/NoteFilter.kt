@@ -1,28 +1,25 @@
 package org.tigeryan.notty.domain.model
 
 import androidx.compose.ui.graphics.Color
-import java.util.Locale
 
 fun interface NoteFilter {
 
-    fun filter(note: Note): Boolean
+    operator fun invoke(note: Note): Boolean
 }
 
-class NoteInputFilter(input: String) : NoteFilter {
+class NoteInputFilter(private val input: String) : NoteFilter {
 
-    val input = input.lowercase(Locale.ROOT)
-
-    override fun filter(note: Note): Boolean {
-        if (input.length < 4) return false
+    override operator fun invoke(note: Note): Boolean {
+        if (input.isEmpty()) return false
 
         val (title, text) = note.noteData
-        return input in title || input in text
+        return title.contains(input, ignoreCase = true) || text.contains(input, ignoreCase = true)
     }
 }
 
 class NoteColorFilter(private val color: Color) : NoteFilter {
 
-    override fun filter(note: Note): Boolean {
+    override operator fun invoke(note: Note): Boolean {
         // TODO add editable colors to notes
         //return note.noteData.color == color
         return false

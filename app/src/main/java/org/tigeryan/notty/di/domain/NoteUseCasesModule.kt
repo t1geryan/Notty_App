@@ -5,7 +5,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import org.tigeryan.notty.domain.repository.NoteListRepository
-import org.tigeryan.notty.domain.usecase.GetNoteUseCase
+import org.tigeryan.notty.domain.usecase.GetNoteByIdUseCase
 import org.tigeryan.notty.domain.usecase.GetNotesUseCase
 import org.tigeryan.notty.domain.usecase.SaveNoteUseCase
 import javax.inject.Singleton
@@ -24,7 +24,7 @@ object NoteUseCasesModule {
     @Singleton
     fun provideGetNoteUseCase(
         notesRepository: NoteListRepository
-    ) = GetNoteUseCase(notesRepository)
+    ) = GetNoteByIdUseCase(notesRepository)
 
     @Provides
     @Singleton

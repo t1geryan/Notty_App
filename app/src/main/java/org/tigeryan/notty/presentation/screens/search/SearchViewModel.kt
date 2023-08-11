@@ -6,13 +6,14 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import org.tigeryan.mvi.IntentReceiver
-import org.tigeryan.notty.domain.repository.NoteListRepository
+import org.tigeryan.notty.domain.model.NoteInputFilter
+import org.tigeryan.notty.domain.usecase.GetNotesUseCase
 import org.tigeryan.notty.utils.extensions.viewModelScopeIO
 import javax.inject.Inject
 
 @HiltViewModel
 class SearchViewModel @Inject constructor(
-    private val noteListRepository: NoteListRepository,
+    private val getNotesUseCase: GetNotesUseCase,
 ) : ViewModel(), IntentReceiver<SearchIntent> {
 
     private val _state = MutableStateFlow(SearchState.empty())
@@ -26,23 +27,20 @@ class SearchViewModel @Inject constructor(
     }
 
     private fun fetchNotesByInput(input: String) {
-        // extract to use case
-        if (input.isNotBlank()) {
-            viewModelScopeIO.launch {
-                with(_state) {
-                    value = SearchState.loading()
-                    try {
-                        noteListRepository.getNotesByInput(input).collect { notes ->
-                            value = SearchState.success(
-                                SearchResult(
-                                    notes = notes,
-                                    input = input,
-                                )
+        viewModelScopeIO.launch {
+            with(_state) {
+                value = SearchState.loading()
+                try {
+                    getNotesUseCase(filter = NoteInputFilter(input)).collect { notes ->
+                        value = SearchState.success(
+                            SearchResult(
+                                notes = notes,
+                                input = input,
                             )
-                        }
-                    } catch (e: Exception) {
-                        value = SearchState.failure(e)
+                        )
                     }
+                } catch (e: Exception) {
+                    value = SearchState.failure(e)
                 }
             }
         }

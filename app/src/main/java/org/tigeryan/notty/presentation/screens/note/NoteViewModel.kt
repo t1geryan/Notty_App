@@ -10,28 +10,28 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import org.tigeryan.mvi.IntentReceiver
-import org.tigeryan.notty.domain.model.Note
 import org.tigeryan.notty.domain.model.NoteData
-import org.tigeryan.notty.domain.repository.NoteListRepository
+import org.tigeryan.notty.domain.usecase.DeleteNoteUseCase
+import org.tigeryan.notty.domain.usecase.GetNoteByIdUseCase
+import org.tigeryan.notty.domain.usecase.SaveNoteUseCase
 import org.tigeryan.notty.utils.extensions.tryEmitFlow
 import org.tigeryan.notty.utils.extensions.viewModelScopeIO
 
 class NoteViewModel @AssistedInject constructor(
     @Assisted private var noteId: Long?,
-    private val noteListRepository: NoteListRepository,
+    private val deleteNoteUseCase: DeleteNoteUseCase,
+    private val getNoteByIdUseCase: GetNoteByIdUseCase,
+    private val saveNoteUseCase: SaveNoteUseCase,
 ) : ViewModel(), IntentReceiver<NoteIntent> {
 
     private val _state = MutableStateFlow(NoteState())
     val state get() = _state.asStateFlow()
 
-    // is the user creates a new note (otherwise edits the old one)
-    private val isCreatingNewNote = noteId == null
-
     init {
-        noteId?.let {
+        noteId?.let { id ->
             viewModelScopeIO.launch {
                 tryEmitFlow(viewModelScopeIO) {
-                    val note = noteListRepository.getNoteById(it).first()
+                    val note = getNoteByIdUseCase(id).first()
                     _state.apply {
                         value = NoteState(
                             title = note.noteData.title,
@@ -67,36 +67,18 @@ class NoteViewModel @AssistedInject constructor(
 
     private fun saveNote() {
         val (title, text) = state.value
-        val isNoteEmpty = title.isBlank() && text.isBlank()
         viewModelScopeIO.launch {
-            /* TODO: Extract to use case */
-            if (isCreatingNewNote && isNoteEmpty) {
-                noteId?.let { id ->
-                    noteListRepository.deleteNoteById(id)
-                }
-            } else if (!isNoteEmpty) {
-                val noteData = NoteData(
-                    title = title,
-                    text = text,
-                )
-                noteId?.let {
-                    noteListRepository.updateNote(
-                        Note(
-                            id = it,
-                            noteData = noteData
-                        )
-                    )
-                } ?: run {
-                    noteId = noteListRepository.addNote(noteData)
-                }
-            }
+            noteId = saveNoteUseCase(
+                noteData = NoteData(title, text),
+                id = noteId
+            )
         }
     }
 
     private fun deleteNote() {
         noteId?.let {
             viewModelScopeIO.launch {
-                noteListRepository.deleteNoteById(it)
+                deleteNoteUseCase(it)
             }
         }
     }

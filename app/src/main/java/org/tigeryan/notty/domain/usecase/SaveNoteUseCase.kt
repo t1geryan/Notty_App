@@ -9,7 +9,7 @@ class SaveNoteUseCase @Inject constructor(
     private val notesRepository: NoteListRepository,
 ) {
 
-    suspend operator fun invoke(noteData: NoteData, isCreatingNewNote: Boolean, id: Long?): Long {
+    suspend operator fun invoke(noteData: NoteData, id: Long?): Long {
         val (title, text) = noteData
         val isNoteEmpty = title.isBlank() && text.isBlank()
         var newId = 0L

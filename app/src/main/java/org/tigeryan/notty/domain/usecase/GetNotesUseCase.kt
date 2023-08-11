@@ -10,15 +10,12 @@ import javax.inject.Inject
 class GetNotesUseCase @Inject constructor(
     private val notesRepository: NoteListRepository,
 ) {
+
     operator fun invoke(filter: NoteFilter? = null): Flow<List<Note>> {
-        val notes = notesRepository.getAllNotes()
-        filter?.let {
-            notes.map { list ->
-                list.filter { note ->
-                    it.filter(note)
-                }
+        return notesRepository.getAllNotes().map { notes ->
+            notes.filter { note ->
+                filter?.invoke(note) ?: true
             }
         }
-        return notes
     }
 }

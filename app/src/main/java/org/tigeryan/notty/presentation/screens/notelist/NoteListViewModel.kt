@@ -7,13 +7,15 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import org.tigeryan.mvi.IntentReceiver
 import org.tigeryan.notty.domain.model.Note
-import org.tigeryan.notty.domain.repository.NoteListRepository
+import org.tigeryan.notty.domain.usecase.DeleteNoteUseCase
+import org.tigeryan.notty.domain.usecase.GetNotesUseCase
 import org.tigeryan.notty.utils.extensions.viewModelScopeIO
 import javax.inject.Inject
 
 @HiltViewModel
 class NoteListViewModel @Inject constructor(
-    private val noteListRepository: NoteListRepository,
+    private val getNotesUseCase: GetNotesUseCase,
+    private val deleteNoteUseCase: DeleteNoteUseCase,
 ) : ViewModel(), IntentReceiver<NoteListIntent> {
 
     private val _state = MutableStateFlow(NoteListState.loading())
@@ -35,7 +37,7 @@ class NoteListViewModel @Inject constructor(
             _state.apply {
                 value = NoteListState.loading()
                 try {
-                    noteListRepository.getAllNotes().collect { notes ->
+                    getNotesUseCase().collect { notes ->
                         value = NoteListState.success(notes)
                     }
                 } catch (e: Exception) {
@@ -48,7 +50,7 @@ class NoteListViewModel @Inject constructor(
 
     private fun deleteNote(note: Note) {
         viewModelScopeIO.launch {
-            noteListRepository.deleteNoteById(note.id)
+            deleteNoteUseCase(note.id)
         }
     }
 }
