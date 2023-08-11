@@ -66,8 +66,8 @@ class NoteViewModel @AssistedInject constructor(
     }
 
     private fun saveNote() {
-        val (title, text) = state.value
         viewModelScope.launch {
+            val (title, text) = state.value
             noteId = saveNoteUseCase(
                 noteData = NoteData(title, text),
                 id = noteId
