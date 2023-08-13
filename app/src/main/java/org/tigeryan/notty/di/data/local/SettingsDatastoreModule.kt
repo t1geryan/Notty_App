@@ -14,7 +14,7 @@ abstract class SettingsDatastoreModule {
 
     @Binds
     @Singleton
-    abstract fun bindsSettingsDao(
+    abstract fun bindSettingsDao(
         settingsDaoImpl: SettingsDaoImpl
     ): SettingsDao
 }

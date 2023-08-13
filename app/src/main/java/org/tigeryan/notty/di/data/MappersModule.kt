@@ -18,7 +18,7 @@ abstract class MappersModule {
 
     @Binds
     @Singleton
-    abstract fun bindsNoteMapper(
+    abstract fun bindNoteMapper(
         noteDomainEntityMapperImpl: NoteDomainEntityMapperImpl
     ): NoteDomainEntityMapper
 
@@ -30,7 +30,7 @@ abstract class MappersModule {
 
     @Binds
     @Singleton
-    abstract fun bindsAppThemeMapper(
+    abstract fun bindAppThemeMapper(
         appThemeDomainEntityMapperImpl: AppThemeDomainEntityMapperImpl
     ): AppThemeDomainEntityMapper
 }
