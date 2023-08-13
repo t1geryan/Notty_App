@@ -1,9 +1,11 @@
 package org.tigeryan.notty.data.database.notes.dao
 
 import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import androidx.room.Upsert
 import kotlinx.coroutines.flow.Flow
+import org.tigeryan.notty.data.database.notes.entities.NoteDataEntity
 import org.tigeryan.notty.data.database.notes.entities.NoteEntity
 
 @Dao
@@ -21,6 +23,14 @@ interface NotesDao {
     @Query("DELETE FROM notes WHERE id = :id")
     suspend fun deleteNoteById(id: Long)
 
-    @Upsert
-    suspend fun upsertNote(noteEntity: NoteEntity): Long
+    @Insert(
+        onConflict = OnConflictStrategy.REPLACE,
+        entity = NoteEntity::class,
+    )
+    suspend fun insertNote(noteData: NoteDataEntity): Long
+
+    @Query("UPDATE notes " +
+            "SET id = :id, text = :text, title = :title, modified_at = CURRENT_TIMESTAMP " +
+            "WHERE id = :id ")
+    suspend fun updateNote(id: Long, title: String, text: String)
 }

@@ -5,6 +5,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import org.tigeryan.notty.data.database.notes.dao.NotesDao
+import org.tigeryan.notty.data.mappers.note.NoteDataDomainEntityMapper
 import org.tigeryan.notty.data.mappers.note.NoteDomainEntityMapper
 import org.tigeryan.notty.domain.model.Note
 import org.tigeryan.notty.domain.model.NoteData
@@ -15,6 +16,7 @@ import javax.inject.Inject
 class NoteListRepositoryImpl @Inject constructor(
     private val notesDao: NotesDao,
     private val notesMapper: NoteDomainEntityMapper,
+    private val noteDataMapper: NoteDataDomainEntityMapper,
 ) : NoteListRepository {
 
     override fun getAllNotes(): Flow<List<Note>> =
@@ -40,12 +42,7 @@ class NoteListRepositoryImpl @Inject constructor(
         }.flowOn(Dispatchers.IO)
 
     override suspend fun addNote(noteData: NoteData): Long = withIOContext {
-        upsertNoteToDb(
-            Note(
-                id = 0,
-                noteData = noteData
-            )
-        )
+        notesDao.insertNote(noteDataMapper.map(noteData))
     }
 
     override suspend fun deleteNoteById(id: Long) {
@@ -54,14 +51,13 @@ class NoteListRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun updateNote(note: Note) {
+    override suspend fun updateNote(id: Long, noteData: NoteData) {
         withIOContext {
-            upsertNoteToDb(note)
+            notesDao.updateNote(
+                id = id,
+                title = noteData.title,
+                text = noteData.text,
+            )
         }
     }
-
-    private suspend fun upsertNoteToDb(note: Note): Long =
-        notesDao.upsertNote(
-            notesMapper.map(note)
-        )
 }

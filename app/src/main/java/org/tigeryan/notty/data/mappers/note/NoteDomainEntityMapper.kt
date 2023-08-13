@@ -2,7 +2,7 @@ package org.tigeryan.notty.data.mappers.note
 
 import org.tigeryan.notty.data.database.notes.entities.NoteEntity
 import org.tigeryan.notty.domain.model.Note
-import org.tigeryan.notty.domain.model.NoteData
+import org.tigeryan.notty.domain.model.NoteTime
 import org.tigeryan.notty.utils.BidirectionalMapper
 import javax.inject.Inject
 
@@ -11,7 +11,9 @@ import javax.inject.Inject
  */
 interface NoteDomainEntityMapper : BidirectionalMapper<Note, NoteEntity>
 
-class NoteDomainEntityMapperImpl @Inject constructor() : NoteDomainEntityMapper {
+class NoteDomainEntityMapperImpl @Inject constructor(
+    private val noteDataDomainEntityMapper: NoteDataDomainEntityMapper,
+) : NoteDomainEntityMapper {
 
     /**
      * Maps [Note] to [NoteEntity]
@@ -19,8 +21,9 @@ class NoteDomainEntityMapperImpl @Inject constructor() : NoteDomainEntityMapper 
     override fun map(valueToMap: Note) = with(valueToMap) {
         NoteEntity(
             id = id,
-            text = noteData.text,
-            title = noteData.title,
+            noteData = noteDataDomainEntityMapper.map(noteData),
+            createdAt = noteTime.createdAt,
+            modifiedAt = noteTime.modifiedAt,
         )
     }
 
@@ -30,10 +33,11 @@ class NoteDomainEntityMapperImpl @Inject constructor() : NoteDomainEntityMapper 
     override fun reverseMap(valueToMap: NoteEntity) = with(valueToMap) {
         Note(
             id = id,
-            noteData = NoteData(
-                text = text,
-                title = title,
-            )
+            noteData = noteDataDomainEntityMapper.reverseMap(noteData),
+            noteTime = NoteTime(
+                createdAt = createdAt,
+                modifiedAt = modifiedAt,
+            ),
         )
     }
 }

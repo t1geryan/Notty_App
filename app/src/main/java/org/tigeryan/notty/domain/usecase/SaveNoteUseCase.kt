@@ -1,6 +1,5 @@
 package org.tigeryan.notty.domain.usecase
 
-import org.tigeryan.notty.domain.model.Note
 import org.tigeryan.notty.domain.model.NoteData
 import org.tigeryan.notty.domain.repository.NoteListRepository
 import javax.inject.Inject
@@ -20,10 +19,8 @@ class SaveNoteUseCase @Inject constructor(
         } else {
             id?.let {
                 notesRepository.updateNote(
-                    Note(
-                        id = it,
-                        noteData = noteData
-                    )
+                    id,
+                    noteData,
                 )
             } ?: run {
                 newId = notesRepository.addNote(noteData)
