@@ -29,7 +29,7 @@ class SearchViewModel @Inject constructor(
     private fun fetchNotesByInput(input: String) {
         viewModelScope.launch {
             with(_state) {
-                value = SearchState.loading()
+                value = SearchState.loading().copy(input = input)
                 try {
                     getNotesUseCase(filter = NoteInputFilter(input)).collect { notes ->
                         value = SearchState.success(
