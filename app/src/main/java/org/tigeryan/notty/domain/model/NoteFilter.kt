@@ -1,28 +1,22 @@
 package org.tigeryan.notty.domain.model
 
-import androidx.compose.ui.graphics.Color
+fun interface Filter<T> {
 
-fun interface NoteFilter {
-
-    operator fun invoke(note: Note): Boolean
+    operator fun invoke(value: T): Boolean
 }
+
+fun interface NoteFilter : Filter<Note>
 
 class NoteInputFilter(private val input: String) : NoteFilter {
 
-    override operator fun invoke(note: Note): Boolean {
+    override operator fun invoke(value: Note): Boolean {
         if (input.isEmpty()) return false
 
-        val (title, text) = note.noteData
+        val (title, text) = value.noteData
         return title.contains(input, ignoreCase = true) || text.contains(input, ignoreCase = true)
     }
 }
 
-class NoteColorFilter(private val color: Color) : NoteFilter {
-
-    override operator fun invoke(note: Note): Boolean {
-        // TODO add editable colors to notes
-        //return note.noteData.color == color
-        return false
-
-    }
+fun <T> Iterable<T>.filter(filter: Filter<T>): List<T> = filter {
+    filter(it)
 }
