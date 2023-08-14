@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import org.tigeryan.notty.R
 import org.tigeryan.notty.domain.model.AppTheme
+import org.tigeryan.notty.domain.model.NoteSortingStrategy
 import org.tigeryan.notty.presentation.screens.settings.views.DropdownMenuSetting
 import org.tigeryan.notty.presentation.screens.settings.views.DropdownMenuSettingModel
 import org.tigeryan.notty.presentation.views.Action
@@ -29,6 +30,9 @@ fun SettingsScreen(
 ) {
     val appThemes = remember {
         AppTheme.values()
+    }
+    val sortingStrategies = remember {
+        NoteSortingStrategy.values()
     }
 
     Scaffold(
@@ -71,6 +75,23 @@ fun SettingsScreen(
                             ),
                             onItemSelected = { index ->
                                 onSendIntent(SettingsIntent.UpdateAppTheme(appThemes[index]))
+                            },
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                        )
+
+                        DropdownMenuSetting(
+                            model = DropdownMenuSettingModel(
+                                title = stringResource(R.string.sorting_strategy_setting_title),
+                                currentIndex = settings.sortingStrategy.ordinal,
+                                values = listOf(
+                                    stringResource(R.string.sorting_strategy_setting_by_title),
+                                    stringResource(R.string.sorting_strategy_setting_by_creation),
+                                    stringResource(R.string.sorting_strategy_setting_by_modification),
+                                ),
+                            ),
+                            onItemSelected = { index ->
+                                onSendIntent(SettingsIntent.UpdateSortingStrategy(sortingStrategies[index]))
                             },
                             modifier = Modifier
                                 .fillMaxWidth(),

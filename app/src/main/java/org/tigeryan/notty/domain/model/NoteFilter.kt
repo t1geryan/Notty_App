@@ -17,6 +17,9 @@ class NoteInputFilter(private val input: String) : NoteFilter {
     }
 }
 
-fun <T> Iterable<T>.filter(filter: Filter<T>): List<T> = filter {
-    filter(it)
-}
+fun <T> Iterable<T>.filter(filter: Filter<T>): List<T> =
+    filter(
+        predicate = {
+            filter(it)
+        }
+    )

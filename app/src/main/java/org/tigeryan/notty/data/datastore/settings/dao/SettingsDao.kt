@@ -9,6 +9,7 @@ import org.tigeryan.notty.data.datastore.dataStore
 import org.tigeryan.notty.data.datastore.getValue
 import org.tigeryan.notty.data.datastore.setValue
 import org.tigeryan.notty.data.datastore.settings.entities.AppThemeEntity
+import org.tigeryan.notty.data.datastore.settings.entities.SortingStrategyEntity
 import javax.inject.Inject
 
 interface SettingsDao {
@@ -16,6 +17,10 @@ interface SettingsDao {
     fun getAppTheme(): Flow<AppThemeEntity>
 
     suspend fun setAppTheme(value: AppThemeEntity)
+
+    fun getSortingStrategy(): Flow<SortingStrategyEntity>
+
+    suspend fun setSortingStrategy(value: SortingStrategyEntity)
 }
 
 class SettingsDaoImpl @Inject constructor(
@@ -25,6 +30,7 @@ class SettingsDaoImpl @Inject constructor(
     private val dataStore = context.dataStore
 
     private val appThemeEntities = AppThemeEntity.values()
+    private val sortingStrategyEntities = SortingStrategyEntity.values()
 
     override fun getAppTheme(): Flow<AppThemeEntity> = dataStore.getValue(
         APP_THEME_PREF_KEY, AppThemeEntity.SYSTEM.ordinal
@@ -35,7 +41,17 @@ class SettingsDaoImpl @Inject constructor(
     override suspend fun setAppTheme(value: AppThemeEntity) =
         dataStore.setValue(APP_THEME_PREF_KEY, value.ordinal)
 
+    override fun getSortingStrategy(): Flow<SortingStrategyEntity> = dataStore.getValue(
+        SORTING_STRATEGY_PREF_KEY, SortingStrategyEntity.BY_TITLE.ordinal
+    ).map {
+        sortingStrategyEntities[it]
+    }
+
+    override suspend fun setSortingStrategy(value: SortingStrategyEntity) =
+        dataStore.setValue(SORTING_STRATEGY_PREF_KEY, value.ordinal)
+
     companion object {
         private val APP_THEME_PREF_KEY = intPreferencesKey("APP_THEME_PREF_KEY")
+        private val SORTING_STRATEGY_PREF_KEY = intPreferencesKey("SORTING_STRATEGY_PREF_KEY")
     }
 }

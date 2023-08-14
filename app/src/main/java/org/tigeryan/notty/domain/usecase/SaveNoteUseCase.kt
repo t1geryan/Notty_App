@@ -3,7 +3,9 @@ package org.tigeryan.notty.domain.usecase
 import org.tigeryan.notty.domain.model.NoteData
 import org.tigeryan.notty.domain.repository.NoteListRepository
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class SaveNoteUseCase @Inject constructor(
     private val notesRepository: NoteListRepository,
 ) {
