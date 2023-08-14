@@ -26,13 +26,6 @@ class NoteListRepositoryImpl @Inject constructor(
             }
         }.flowOn(Dispatchers.IO)
 
-    override fun getNotesByInput(input: String): Flow<List<Note>> =
-        notesDao.getNotesByKeyword(input).map { list ->
-            list.map { entity ->
-                notesMapper.reverseMap(entity)
-            }
-        }.flowOn(Dispatchers.IO)
-
     override fun getNoteById(id: Long): Flow<Note> =
         notesDao.getNoteById(id).map { list ->
             notesMapper.reverseMap(

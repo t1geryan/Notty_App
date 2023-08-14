@@ -8,8 +8,6 @@ interface NoteListRepository {
 
     fun getAllNotes(): Flow<List<Note>>
 
-    fun getNotesByInput(input: String): Flow<List<Note>>
-
     fun getNoteById(id: Long): Flow<Note>
 
     suspend fun addNote(noteData: NoteData): Long
