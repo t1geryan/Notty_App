@@ -41,16 +41,16 @@ data class DropdownMenuSettingModel(
 internal fun DropdownMenuSetting(
     model: DropdownMenuSettingModel,
     modifier: Modifier = Modifier,
-    onItemSelected: ((Int) -> Unit)? = null,
+    onItemSelected: (Int) -> Unit = {},
 ) {
-    var isDropdownOpen by rememberMutableStateOf(value = false)
-    var currentPosition by rememberMutableStateOf(value = model.currentIndex)
-
     val contentColor = colorScheme.onBackground
     val contentColorAlpha = remember(contentColor) {
         contentColor.copy(alpha = 0.4f)
     }
     val containerColor = colorScheme.background
+
+    var isDropdownOpen by rememberMutableStateOf(value = false)
+    var currentPosition by rememberMutableStateOf(value = model.currentIndex)
 
     Column(
         modifier = modifier,
@@ -68,8 +68,7 @@ internal fun DropdownMenuSetting(
         ) {
             Text(
                 modifier = Modifier
-                    .weight(1f)
-                    .padding(end = MaterialTheme.spacing.medium),
+                    .weight(1f),
                 text = model.title,
                 style = typography.bodyLarge,
                 color = contentColor,
@@ -103,7 +102,7 @@ internal fun DropdownMenuSetting(
                 DropdownMenuItem(onClick = {
                     currentPosition = index
                     isDropdownOpen = false
-                    onItemSelected?.invoke(index)
+                    onItemSelected(index)
                 }) {
                     Text(
                         text = value,

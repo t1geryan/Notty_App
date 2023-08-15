@@ -18,6 +18,8 @@ import org.tigeryan.notty.domain.model.AppTheme
 import org.tigeryan.notty.domain.model.NoteSortingStrategy
 import org.tigeryan.notty.presentation.screens.settings.views.DropdownMenuSetting
 import org.tigeryan.notty.presentation.screens.settings.views.DropdownMenuSettingModel
+import org.tigeryan.notty.presentation.screens.settings.views.ToggleSetting
+import org.tigeryan.notty.presentation.screens.settings.views.ToggleSettingModel
 import org.tigeryan.notty.presentation.views.Action
 import org.tigeryan.notty.presentation.views.AppActionBar
 
@@ -92,6 +94,18 @@ fun SettingsScreen(
                             ),
                             onItemSelected = { index ->
                                 onSendIntent(SettingsIntent.UpdateSortingStrategy(sortingStrategies[index]))
+                            },
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                        )
+
+                        ToggleSetting(
+                            model = ToggleSettingModel(
+                                title = stringResource(R.string.descending_sort_setting_title),
+                                isChecked = state.settings.isDescendingSort,
+                            ),
+                            onCheckedChange = { isChecked ->
+                                onSendIntent(SettingsIntent.UpdateIsDescendingSorting(isChecked))
                             },
                             modifier = Modifier
                                 .fillMaxWidth(),

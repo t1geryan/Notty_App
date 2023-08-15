@@ -9,6 +9,7 @@ import org.tigeryan.notty.domain.model.NoteSortingStrategy
 data class Settings(
     val appTheme: AppTheme = AppTheme.UNDEFINED,
     val sortingStrategy: NoteSortingStrategy = NoteSortingStrategy.BY_TITLE,
+    val isDescendingSort: Boolean = false,
 )
 
 @Immutable

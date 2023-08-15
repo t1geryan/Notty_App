@@ -21,10 +21,18 @@ class GetNotesUseCase @Inject constructor(
     ): Flow<List<Note>> = combine(
         notesRepository.getAllNotes(),
         settingsRepository.getSortingStrategy(),
-    ) { notes, noteSortingStrategy ->
-        val result = filter?.let {
+        settingsRepository.getIsDescendingSorting(),
+    ) { notes, noteSortingStrategy, isDescendingSorting ->
+        var result = filter?.let {
             notes.filter(filter)
         } ?: notes
-        result.sortedWith(noteSortingStrategy.toNoteComparator())
+
+        result = result.sortedWith(noteSortingStrategy.toNoteComparator())
+
+        if (isDescendingSorting) {
+            result = result.asReversed()
+        }
+
+        result
     }
 }

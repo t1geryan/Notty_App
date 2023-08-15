@@ -26,8 +26,9 @@ class SettingsViewModel @Inject constructor(
             combine(
                 settingsRepository.getCurrentAppTheme(),
                 settingsRepository.getSortingStrategy(),
-            ) { appTheme, noteSortingStrategy ->
-                Settings(appTheme, noteSortingStrategy)
+                settingsRepository.getIsDescendingSorting(),
+            ) { appTheme, noteSortingStrategy, isDescendingSorting ->
+                Settings(appTheme, noteSortingStrategy, isDescendingSorting)
             }.collect { settings ->
                 _state.value = _state.value.copy(
                     settings = settings,
@@ -41,6 +42,7 @@ class SettingsViewModel @Inject constructor(
         when (intent) {
             is SettingsIntent.UpdateAppTheme -> setAppTheme(intent.appTheme)
             is SettingsIntent.UpdateSortingStrategy -> setSortingStrategy(intent.sortingStrategy)
+            is SettingsIntent.UpdateIsDescendingSorting -> setIsDescendingSorting(intent.isDescendingSorting)
         }
     }
 
@@ -53,6 +55,12 @@ class SettingsViewModel @Inject constructor(
     private fun setSortingStrategy(sortingStrategy: NoteSortingStrategy) {
         viewModelScope.launch {
             settingsRepository.setSortingStrategy(sortingStrategy)
+        }
+    }
+
+    private fun setIsDescendingSorting(isDescendingSorting: Boolean) {
+        viewModelScope.launch {
+            settingsRepository.setIsDescendingSorting(isDescendingSorting)
         }
     }
 }

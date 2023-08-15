@@ -13,4 +13,8 @@ interface SettingsRepository {
     fun getSortingStrategy(): Flow<NoteSortingStrategy>
 
     suspend fun setSortingStrategy(value: NoteSortingStrategy)
+
+    fun getIsDescendingSorting(): Flow<Boolean>
+
+    suspend fun setIsDescendingSorting(value: Boolean)
 }

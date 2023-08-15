@@ -24,6 +24,7 @@
     <string name="sorting_strategy_setting_by_modification">By Modification Time</string>
     <string name="sorting_strategy_setting_by_creation">By Creation Time</string>
     <string name="sorting_strategy_setting_title">Sort by</string>
+    <string name="descending_sort_setting_title">Descending sort</string>
 
     <!--Icon and actions titles and descriptions-->
     <string name="navigate_up_action_title">Navigate Up</string>
@@ -34,5 +35,4 @@
 
     <!--Dialog-->
     <string name="try_again">Try Again</string>
-
 </resources>

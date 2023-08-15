@@ -9,4 +9,6 @@ sealed interface SettingsIntent : Intent {
     data class UpdateAppTheme(val appTheme: AppTheme) : SettingsIntent
 
     data class UpdateSortingStrategy(val sortingStrategy: NoteSortingStrategy) : SettingsIntent
+
+    data class UpdateIsDescendingSorting(val isDescendingSorting: Boolean) : SettingsIntent
 }

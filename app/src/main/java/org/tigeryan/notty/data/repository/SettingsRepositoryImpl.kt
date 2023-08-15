@@ -34,9 +34,16 @@ class SettingsRepositoryImpl @Inject constructor(
             sortingStrategyMapper.reverseMap(entity)
         }.flowOn(Dispatchers.IO)
 
-    override suspend fun setSortingStrategy(value: NoteSortingStrategy) {
+    override suspend fun setSortingStrategy(value: NoteSortingStrategy) = withIOContext {
         settingsDao.setSortingStrategy(
             sortingStrategyMapper.map(value)
         )
+    }
+
+    override fun getIsDescendingSorting(): Flow<Boolean> =
+        settingsDao.getIsDescendingSorting().flowOn(Dispatchers.IO)
+
+    override suspend fun setIsDescendingSorting(value: Boolean) = withIOContext {
+        settingsDao.setIsDescendingSorting(value)
     }
 }

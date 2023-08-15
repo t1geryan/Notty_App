@@ -1,6 +1,7 @@
 package org.tigeryan.notty.data.datastore.settings.dao
 
 import android.content.Context
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.intPreferencesKey
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
@@ -21,6 +22,10 @@ interface SettingsDao {
     fun getSortingStrategy(): Flow<SortingStrategyEntity>
 
     suspend fun setSortingStrategy(value: SortingStrategyEntity)
+
+    fun getIsDescendingSorting(): Flow<Boolean>
+
+    suspend fun setIsDescendingSorting(value: Boolean)
 }
 
 class SettingsDaoImpl @Inject constructor(
@@ -50,8 +55,16 @@ class SettingsDaoImpl @Inject constructor(
     override suspend fun setSortingStrategy(value: SortingStrategyEntity) =
         dataStore.setValue(SORTING_STRATEGY_PREF_KEY, value.ordinal)
 
+    override fun getIsDescendingSorting(): Flow<Boolean> = dataStore.getValue(
+        DESCENDING_SORTING_PREF_KEY, false
+    )
+
+    override suspend fun setIsDescendingSorting(value: Boolean) =
+        dataStore.setValue(DESCENDING_SORTING_PREF_KEY, value)
+
     companion object {
         private val APP_THEME_PREF_KEY = intPreferencesKey("APP_THEME_PREF_KEY")
         private val SORTING_STRATEGY_PREF_KEY = intPreferencesKey("SORTING_STRATEGY_PREF_KEY")
+        private val DESCENDING_SORTING_PREF_KEY = booleanPreferencesKey("DESC_SORT_PREF_KEY")
     }
 }
