@@ -2,6 +2,7 @@ package org.tigeryan.notty.presentation.theme
 
 import android.app.Activity
 import android.os.Build
+import android.view.View
 import android.view.WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
@@ -12,6 +13,7 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.SideEffect
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
@@ -48,19 +50,10 @@ fun NottyTheme(
         darkTheme -> DarkColorScheme
         else -> LightColorScheme
     }
+
     val view = LocalView.current
-    if (!view.isInEditMode && Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-        SideEffect {
-            val window = (view.context as Activity).window
-            val decorView = window.decorView
-            window.statusBarColor = colorScheme.background.toArgb()
-            window.navigationBarColor = colorScheme.background.toArgb()
-            if (!darkTheme)
-                decorView.windowInsetsController?.setSystemBarsAppearance(
-                    APPEARANCE_LIGHT_STATUS_BARS,
-                    APPEARANCE_LIGHT_STATUS_BARS
-                )
-        }
+    SideEffect {
+        changeSystemBarsColor(view, colorScheme.background, darkTheme)
     }
 
     CompositionLocalProvider(
@@ -72,5 +65,31 @@ fun NottyTheme(
             typography = Typography,
             content = content
         )
+    }
+}
+
+private fun changeSystemBarsColor(
+    view: View,
+    backgroundColor: Color,
+    darkTheme: Boolean
+) {
+    val backgroundColorArgb = backgroundColor.toArgb()
+
+    if (!view.isInEditMode && Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+        // change system bars background color
+        val window = (view.context as Activity).window
+        window.statusBarColor = backgroundColorArgb
+        window.navigationBarColor = backgroundColorArgb
+
+        // change status bar icons color
+        window.decorView.windowInsetsController?.let {
+            if (darkTheme) {
+                // icons color to white
+                it.setSystemBarsAppearance(0, APPEARANCE_LIGHT_STATUS_BARS)
+            } else {
+                // icons color to black
+                it.setSystemBarsAppearance(APPEARANCE_LIGHT_STATUS_BARS, APPEARANCE_LIGHT_STATUS_BARS)
+            }
+        }
     }
 }
