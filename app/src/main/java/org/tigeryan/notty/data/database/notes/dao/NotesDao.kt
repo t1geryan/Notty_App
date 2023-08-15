@@ -4,9 +4,11 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
-import org.tigeryan.notty.data.database.notes.entities.NoteDataEntity
 import org.tigeryan.notty.data.database.notes.entities.NoteEntity
+import org.tigeryan.notty.data.database.notes.tuples.NoteInsertTuple
+import org.tigeryan.notty.data.database.notes.tuples.NoteUpdateTuple
 
 @Dao
 interface NotesDao {
@@ -27,10 +29,11 @@ interface NotesDao {
         onConflict = OnConflictStrategy.REPLACE,
         entity = NoteEntity::class,
     )
-    suspend fun insertNote(noteData: NoteDataEntity): Long
+    suspend fun insertNote(noteInsertTuple: NoteInsertTuple): Long
 
-    @Query("UPDATE notes " +
-            "SET id = :id, text = :text, title = :title, modified_at = CURRENT_TIMESTAMP " +
-            "WHERE id = :id ")
-    suspend fun updateNote(id: Long, title: String, text: String)
+    @Update(
+        onConflict = OnConflictStrategy.REPLACE,
+        entity = NoteEntity::class,
+    )
+    suspend fun updateNote(noteUpdateTuple: NoteUpdateTuple)
 }
