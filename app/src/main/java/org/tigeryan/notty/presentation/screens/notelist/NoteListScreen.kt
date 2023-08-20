@@ -15,6 +15,9 @@ import androidx.compose.material.DismissDirection
 import androidx.compose.material.DismissValue
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.FractionalThreshold
+import androidx.compose.material.SnackbarHost
+import androidx.compose.material.SnackbarHostState
+import androidx.compose.material.SnackbarResult
 import androidx.compose.material.SwipeToDismiss
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -36,12 +39,16 @@ import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collectLatest
 import org.tigeryan.notty.R
-import org.tigeryan.notty.domain.model.Note
 import org.tigeryan.notty.presentation.theme.spacing
 import org.tigeryan.notty.presentation.views.Action
 import org.tigeryan.notty.presentation.views.AppActionBar
@@ -54,11 +61,15 @@ import org.tigeryan.notty.presentation.views.SwipeBackground
 fun NoteListScreen(
     state: NoteListState,
     onSendIntent: (NoteListIntent) -> Unit,
+    eventsFlow: Flow<NoteListViewModel.Event>,
     onNavigateToEditor: () -> Unit,
     onNavigateToSearch: () -> Unit,
     onNavigateToSettings: () -> Unit,
     onNavigateToNote: (Long) -> Unit,
 ) {
+    val snackbarHostState = remember { SnackbarHostState() }
+    val context = LocalContext.current
+
     Scaffold(
         topBar = {
             AppActionBar(
@@ -91,6 +102,9 @@ fun NoteListScreen(
             }
         },
         floatingActionButtonPosition = FabPosition.End,
+        snackbarHost = {
+            SnackbarHost(hostState = snackbarHostState)
+        }
     ) { paddingValues ->
         Box(
             modifier = Modifier
@@ -147,13 +161,30 @@ fun NoteListScreen(
                 }
             }
         }
+
+        LaunchedEffect(key1 = Unit) {
+            eventsFlow.collectLatest { event ->
+                when (event) {
+                    is NoteListViewModel.Event.ShowSnackbar -> {
+                        val result = snackbarHostState.showSnackbar(
+                            message = context.getString(event.message),
+                            actionLabel = context.getString(event.actionTitle),
+                        )
+                        when (result) {
+                            SnackbarResult.Dismissed -> event.onDismiss()
+                            SnackbarResult.ActionPerformed -> event.onAction()
+                        }
+                    }
+                }
+            }
+        }
     }
 }
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
 @Composable
 private fun NoteList(
-    notes: List<Note>,
+    notes: List<NoteItem>,
     onNavigateToNote: (Long) -> Unit,
     onSendIntent: (NoteListIntent) -> Unit,
     modifier: Modifier = Modifier,
@@ -163,65 +194,68 @@ private fun NoteList(
     ) {
         items(
             items = notes,
-            key = { note ->
-                note.id
+            key = { noteItem ->
+                noteItem.note.id
             }
-        ) { note ->
-            val dismissState = rememberDismissState {
-                when (it) {
-                    DismissValue.DismissedToStart -> {
-                        onSendIntent(NoteListIntent.DeleteNoteIntent(note))
-                        true
+        ) { noteItem ->
+            val note = noteItem.note
+            if (noteItem.isVisible) {
+                val dismissState = rememberDismissState {
+                    when (it) {
+                        DismissValue.DismissedToStart -> {
+                            onSendIntent(NoteListIntent.DeleteNoteIntent(note))
+                            true
+                        }
+
+                        else -> false
                     }
-
-                    else -> false
                 }
-            }
 
-            val directions = setOf(DismissDirection.EndToStart)
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-            ) {
-                SwipeToDismiss(
-                    directions = directions,
-                    state = dismissState,
-                    dismissThresholds = {
-                        FractionalThreshold(0.75f)
-                    },
-                    background = {
-                        SwipeBackground(
-                            dismissState = dismissState,
-                            icon = Icons.Default.Delete,
-                            directions = directions,
-                            shape = shapes.large,
-                            containerColor = colorScheme.secondary,
-                            contentColor = colorScheme.onSecondary,
-                            modifier = Modifier
-                                .fillMaxSize()
-                        )
-                    },
-                    modifier = Modifier
-                        .padding(
-                            horizontal = MaterialTheme.spacing.small,
-                            vertical = MaterialTheme.spacing.tiny
-                        )
-                        .animateItemPlacement(),
-                ) {
-                    NoteItem(
-                        note = note,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable {
-                                onNavigateToNote(note.id)
-                            },
-                    )
-                }
-                Spacer(
+                val directions = setOf(DismissDirection.EndToStart)
+                Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(MaterialTheme.spacing.small),
-                )
+                ) {
+                    SwipeToDismiss(
+                        directions = directions,
+                        state = dismissState,
+                        dismissThresholds = {
+                            FractionalThreshold(0.75f)
+                        },
+                        background = {
+                            SwipeBackground(
+                                dismissState = dismissState,
+                                icon = Icons.Default.Delete,
+                                directions = directions,
+                                shape = shapes.large,
+                                containerColor = colorScheme.secondary,
+                                contentColor = colorScheme.onSecondary,
+                                modifier = Modifier
+                                    .fillMaxSize()
+                            )
+                        },
+                        modifier = Modifier
+                            .padding(
+                                horizontal = MaterialTheme.spacing.small,
+                                vertical = MaterialTheme.spacing.tiny
+                            )
+                            .animateItemPlacement(),
+                    ) {
+                        NoteItem(
+                            note = note,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable {
+                                    onNavigateToNote(note.id)
+                                },
+                        )
+                    }
+                    Spacer(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(MaterialTheme.spacing.small),
+                    )
+                }
             }
         }
     }

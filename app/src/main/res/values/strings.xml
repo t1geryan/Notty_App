@@ -35,4 +35,7 @@
 
     <!--Dialog-->
     <string name="try_again">Try Again</string>
+    <string name="deletion_undo_message">Do you want to undo the deletion?</string>
+    <string name="undo">Undo</string>
+
 </resources>

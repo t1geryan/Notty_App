@@ -28,9 +28,11 @@ internal fun NavGraphBuilder.noteListScreen(
     composable(route = Route.NOTE_LIST.route) {
         val viewModel: NoteListViewModel = hiltViewModel()
         val state by viewModel.state.collectAsStateWithLifecycle()
+        val events = viewModel.events
         NoteListScreen(
             state = state,
             onSendIntent = viewModel::receive,
+            eventsFlow = events,
             onNavigateToNote = navController::navigateFromNoteListToNote,
             onNavigateToSettings = navController::navigateFromNoteListToSettings,
             onNavigateToEditor = {

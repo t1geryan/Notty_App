@@ -2,19 +2,18 @@ package org.tigeryan.notty.presentation.screens.notelist
 
 import androidx.compose.runtime.Immutable
 import org.tigeryan.mvi.StateCreator
-import org.tigeryan.notty.domain.model.Note
 
 @Immutable
 data class NoteListState(
-    val notes: List<Note>,
+    val notes: List<NoteItem>,
     val isLoading: Boolean,
     val isFailed: Boolean,
     val exception: Exception?,
 ) {
 
-    companion object : StateCreator<NoteListState, List<Note>> {
+    companion object : StateCreator<NoteListState, List<NoteItem>> {
 
-        override fun success(data: List<Note>): NoteListState = NoteListState(
+        override fun success(data: List<NoteItem>): NoteListState = NoteListState(
             notes = data,
             isLoading = false,
             isFailed = false,
