@@ -1,14 +1,20 @@
 package org.tigeryan.notty.presentation.screens.notelist
 
+import android.content.Context
+import android.content.Intent
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.BottomSheetScaffold
@@ -26,8 +32,10 @@ import androidx.compose.material.SwipeToDismiss
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.material.icons.outlined.Share
 import androidx.compose.material.rememberBottomSheetScaffoldState
 import androidx.compose.material.rememberDismissState
 import androidx.compose.material3.AlertDialog
@@ -43,10 +51,14 @@ import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -55,12 +67,14 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.tigeryan.notty.R
+import org.tigeryan.notty.domain.model.Note
 import org.tigeryan.notty.presentation.theme.spacing
 import org.tigeryan.notty.presentation.views.Action
 import org.tigeryan.notty.presentation.views.AppActionBar
 import org.tigeryan.notty.presentation.views.ImageWithTextBelow
 import org.tigeryan.notty.presentation.views.NoteItem
 import org.tigeryan.notty.presentation.views.SwipeBackground
+import org.tigeryan.notty.utils.extensions.rememberMutableStateOf
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
@@ -80,6 +94,8 @@ fun NoteListScreen(
         bottomSheetState = BottomSheetState(BottomSheetValue.Collapsed)
     )
     val scope = rememberCoroutineScope()
+
+    var selectedNote: Note? by rememberMutableStateOf(value = null)
 
     BottomSheetScaffold(
         topBar = {
@@ -115,7 +131,20 @@ fun NoteListScreen(
             SnackbarHost(hostState = snackbarHostState)
         },
         sheetContent = {
-
+            BottomSheetElement(
+                icon = Icons.Outlined.Share,
+                label = stringResource(R.string.share_note_label),
+                onClick = {
+                    selectedNote?.let {
+                        shareNote(context, it)
+                    }
+                },
+            )
+            BottomSheetElement(
+                icon = Icons.Outlined.Delete,
+                label = stringResource(R.string.delete_note_label),
+                onClick = { /*TODO*/ },
+            )
         },
         scaffoldState = scaffoldState,
         sheetGesturesEnabled = true,
@@ -171,6 +200,7 @@ fun NoteListScreen(
                             onLongClick = {
                                 scope.launch {
                                     scaffoldState.bottomSheetState.expand()
+                                    selectedNote = notes[it].note
                                 }
                             },
                             onSendIntent = onSendIntent,
@@ -223,7 +253,6 @@ private fun NoteList(
                             onSendIntent(NoteListIntent.DeleteNoteIntent(note))
                             true
                         }
-
                         else -> false
                     }
                 }
@@ -279,4 +308,52 @@ private fun NoteList(
             }
         }
     }
+}
+
+@Composable
+private fun BottomSheetElement(
+    icon: ImageVector,
+    label: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    iconTint: Color = colorScheme.primary,
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Start,
+        modifier = modifier
+            .fillMaxWidth()
+            .clickable {
+                onClick()
+            }
+            .padding(
+                horizontal = MaterialTheme.spacing.large,
+                vertical = MaterialTheme.spacing.medium,
+            ),
+    ) {
+        Icon(
+            imageVector = icon,
+            contentDescription = null,
+            tint = iconTint,
+        )
+        Spacer(
+            modifier = Modifier
+                .width(MaterialTheme.spacing.large)
+        )
+        Text(
+            text = label,
+        )
+    }
+}
+
+private fun shareNote(context: Context, note: Note) {
+    val (title, text) = note.noteData
+    val sendIntent: Intent = Intent().apply {
+        action = Intent.ACTION_SEND
+        putExtra(Intent.EXTRA_TEXT, "$title\n$text")
+        type = "text/plain"
+    }
+
+    val shareIntent = Intent.createChooser(sendIntent, null)
+    context.startActivity(shareIntent)
 }
