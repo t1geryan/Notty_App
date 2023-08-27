@@ -8,9 +8,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeightIn
 import androidx.compose.material.DropdownMenuItem
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.ExpandLess
-import androidx.compose.material.icons.outlined.ExpandMore
 import androidx.compose.material3.Divider
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.Icon
@@ -28,6 +25,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import org.tigeryan.notty.presentation.theme.NottyTheme
 import org.tigeryan.notty.presentation.theme.dimens
+import org.tigeryan.notty.presentation.theme.icons
 import org.tigeryan.notty.presentation.theme.spacing
 import org.tigeryan.notty.utils.extensions.rememberMutableStateOf
 
@@ -79,7 +77,7 @@ internal fun DropdownMenuSetting(
                 color = contentColorAlpha,
             )
             Icon(
-                imageVector = if (isDropdownOpen) Icons.Outlined.ExpandLess else Icons.Outlined.ExpandMore,
+                imageVector = if (isDropdownOpen) MaterialTheme.icons.expandLess else MaterialTheme.icons.expandMore,
                 contentDescription = null,
                 tint = contentColorAlpha,
             )

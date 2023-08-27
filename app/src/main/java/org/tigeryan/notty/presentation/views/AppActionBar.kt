@@ -3,8 +3,6 @@ package org.tigeryan.notty.presentation.views
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -15,9 +13,11 @@ import androidx.compose.material3.TopAppBarColors
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
+import org.tigeryan.notty.presentation.theme.icons
 import org.tigeryan.notty.presentation.theme.spacing
 
 data class Action(
@@ -27,10 +27,13 @@ data class Action(
 ) {
 
     companion object {
+
+        @Composable
+        @ReadOnlyComposable
         fun navigateUpAction(title: String, onClick: () -> Unit) = Action(
             title = title,
             onClick = onClick,
-            icon = Icons.Outlined.ArrowBack,
+            icon = MaterialTheme.icons.arrowBack,
         )
     }
 }

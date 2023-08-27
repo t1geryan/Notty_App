@@ -29,13 +29,6 @@ import androidx.compose.material.SnackbarHost
 import androidx.compose.material.SnackbarHostState
 import androidx.compose.material.SnackbarResult
 import androidx.compose.material.SwipeToDismiss
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.outlined.Delete
-import androidx.compose.material.icons.outlined.Search
-import androidx.compose.material.icons.outlined.Settings
-import androidx.compose.material.icons.outlined.Share
 import androidx.compose.material.rememberBottomSheetScaffoldState
 import androidx.compose.material.rememberDismissState
 import androidx.compose.material3.AlertDialog
@@ -68,6 +61,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.tigeryan.notty.R
 import org.tigeryan.notty.domain.model.Note
+import org.tigeryan.notty.presentation.theme.icons
 import org.tigeryan.notty.presentation.theme.spacing
 import org.tigeryan.notty.presentation.views.Action
 import org.tigeryan.notty.presentation.views.AppActionBar
@@ -103,11 +97,11 @@ fun NoteListScreen(
                 title = stringResource(R.string.note_list_screen_title), actions = listOf(
                     Action(
                         title = stringResource(R.string.search_action_title),
-                        icon = Icons.Outlined.Search,
+                        icon = MaterialTheme.icons.search,
                         onClick = onNavigateToSearch,
                     ), Action(
                         title = stringResource(R.string.settings_action_title),
-                        icon = Icons.Outlined.Settings,
+                        icon = MaterialTheme.icons.settings,
                         onClick = onNavigateToSettings
                     )
                 )
@@ -121,7 +115,7 @@ fun NoteListScreen(
                 shape = shapes.extraLarge,
             ) {
                 Icon(
-                    imageVector = Icons.Default.Add,
+                    imageVector = MaterialTheme.icons.add,
                     contentDescription = stringResource(R.string.create_note_icon_description),
                 )
             }
@@ -132,7 +126,7 @@ fun NoteListScreen(
         },
         sheetContent = {
             BottomSheetElement(
-                icon = Icons.Outlined.Share,
+                icon = MaterialTheme.icons.share,
                 label = stringResource(R.string.share_note_label),
                 onClick = {
                     selectedNote?.let {
@@ -141,7 +135,7 @@ fun NoteListScreen(
                 },
             )
             BottomSheetElement(
-                icon = Icons.Outlined.Delete,
+                icon = MaterialTheme.icons.delete,
                 label = stringResource(R.string.delete_note_label),
                 onClick = { /*TODO*/ },
             )
@@ -270,7 +264,7 @@ private fun NoteList(
                         background = {
                             SwipeBackground(
                                 dismissState = dismissState,
-                                icon = Icons.Default.Delete,
+                                icon = MaterialTheme.icons.delete,
                                 directions = directions,
                                 shape = shapes.large,
                                 containerColor = colorScheme.secondary,

@@ -18,14 +18,14 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 
-private val DarkColorScheme = darkColorScheme(
+private val darkColorScheme = darkColorScheme(
     primary = Purple80,
     secondary = PurpleGrey80,
     tertiary = Pink80,
     surface = DarkGrey,
 )
 
-private val LightColorScheme = lightColorScheme(
+private val lightColorScheme = lightColorScheme(
     primary = Purple40,
     secondary = PurpleGrey40,
     tertiary = Pink40,
@@ -34,6 +34,9 @@ private val LightColorScheme = lightColorScheme(
 
 @Composable
 fun NottyTheme(
+    icons: Icons = MaterialTheme.icons,
+
+
     dimens: Dimens = MaterialTheme.dimens,
     spacing: Spacing = MaterialTheme.spacing,
     darkTheme: Boolean = isSystemInDarkTheme(),
@@ -47,8 +50,8 @@ fun NottyTheme(
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
 
-        darkTheme -> DarkColorScheme
-        else -> LightColorScheme
+        darkTheme -> darkColorScheme
+        else -> lightColorScheme
     }
 
     val view = LocalView.current
@@ -59,6 +62,7 @@ fun NottyTheme(
     CompositionLocalProvider(
         LocalDimens provides dimens,
         LocalSpacing provides spacing,
+        LocalIcons provides icons,
     ) {
         MaterialTheme(
             colorScheme = colorScheme,

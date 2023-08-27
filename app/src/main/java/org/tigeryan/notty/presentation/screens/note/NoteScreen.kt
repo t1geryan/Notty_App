@@ -7,9 +7,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Scaffold
@@ -25,6 +24,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import org.tigeryan.notty.R
+import org.tigeryan.notty.presentation.theme.icons
 import org.tigeryan.notty.presentation.views.Action
 import org.tigeryan.notty.presentation.views.AppActionBar
 
@@ -48,7 +48,7 @@ fun NoteScreen(
                 actions = listOf(
                     Action(
                         title = stringResource(R.string.delete_note_action_title),
-                        icon = Icons.Outlined.Delete,
+                        icon = MaterialTheme.icons.delete,
                         onClick = {
                             onSendIntent(NoteIntent.DeleteNoteIntent)
                             onNavigateUp()

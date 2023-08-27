@@ -11,9 +11,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.ArrowBack
-import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -36,6 +33,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import org.tigeryan.notty.R
 import org.tigeryan.notty.domain.model.Note
+import org.tigeryan.notty.presentation.theme.icons
 import org.tigeryan.notty.presentation.theme.spacing
 import org.tigeryan.notty.presentation.views.ImageWithTextBelow
 import org.tigeryan.notty.presentation.views.NoteItem
@@ -192,7 +190,7 @@ private fun SearchTextFieldAppBar(
                         onClick = onNavigateUp,
                     ) {
                         Icon(
-                            imageVector = Icons.Outlined.ArrowBack,
+                            imageVector = MaterialTheme.icons.arrowBack,
                             contentDescription = stringResource(id = R.string.navigate_up_action_title),
                         )
                     }
@@ -204,7 +202,7 @@ private fun SearchTextFieldAppBar(
                         },
                     ) {
                         Icon(
-                            imageVector = Icons.Outlined.Close,
+                            imageVector = MaterialTheme.icons.close,
                             contentDescription = stringResource(id = R.string.navigate_up_action_title),
                         )
                     }
