@@ -17,30 +17,31 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.material.BottomSheetScaffold
-import androidx.compose.material.BottomSheetState
-import androidx.compose.material.BottomSheetValue
+import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.material.DismissDirection
 import androidx.compose.material.DismissValue
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.FabPosition
 import androidx.compose.material.FractionalThreshold
+import androidx.compose.material.ModalBottomSheetLayout
+import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.SnackbarHost
 import androidx.compose.material.SnackbarHostState
 import androidx.compose.material.SnackbarResult
 import androidx.compose.material.SwipeToDismiss
-import androidx.compose.material.rememberBottomSheetScaffoldState
 import androidx.compose.material.rememberDismissState
+import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.MaterialTheme.shapes
 import androidx.compose.material3.MaterialTheme.typography
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -55,7 +56,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -84,46 +84,12 @@ fun NoteListScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     val context = LocalContext.current
 
-    val scaffoldState = rememberBottomSheetScaffoldState(
-        bottomSheetState = BottomSheetState(BottomSheetValue.Collapsed)
-    )
+    val sheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
     val scope = rememberCoroutineScope()
 
     var selectedNote: Note? by rememberMutableStateOf(value = null)
 
-    BottomSheetScaffold(
-        topBar = {
-            AppActionBar(
-                title = stringResource(R.string.note_list_screen_title), actions = listOf(
-                    Action(
-                        title = stringResource(R.string.search_action_title),
-                        icon = MaterialTheme.icons.search,
-                        onClick = onNavigateToSearch,
-                    ), Action(
-                        title = stringResource(R.string.settings_action_title),
-                        icon = MaterialTheme.icons.settings,
-                        onClick = onNavigateToSettings
-                    )
-                )
-            )
-        },
-        floatingActionButton = {
-            FloatingActionButton(
-                onClick = onNavigateToEditor,
-                containerColor = colorScheme.surface,
-                contentColor = colorScheme.onSurface,
-                shape = shapes.extraLarge,
-            ) {
-                Icon(
-                    imageVector = MaterialTheme.icons.add,
-                    contentDescription = stringResource(R.string.create_note_icon_description),
-                )
-            }
-        },
-        floatingActionButtonPosition = FabPosition.End,
-        snackbarHost = {
-            SnackbarHost(hostState = snackbarHostState)
-        },
+    ModalBottomSheetLayout(
         sheetContent = {
             BottomSheetElement(
                 icon = MaterialTheme.icons.share,
@@ -137,69 +103,110 @@ fun NoteListScreen(
             BottomSheetElement(
                 icon = MaterialTheme.icons.delete,
                 label = stringResource(R.string.delete_note_label),
-                onClick = { /*TODO*/ },
+                onClick = {
+                    selectedNote?.let {
+                        onSendIntent(NoteListIntent.DeleteNoteIntent(it))
+                    }
+                    scope.launch {
+                        sheetState.hide()
+                    }
+                },
             )
         },
-        scaffoldState = scaffoldState,
-        sheetGesturesEnabled = true,
-        sheetPeekHeight = 0.dp,
-    ) { paddingValues ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-        ) {
-            with(state) {
-                if (isLoading) {
-                    CircularProgressIndicator(
-                        modifier = Modifier.align(Alignment.Center),
+        sheetState = sheetState,
+        sheetShape = shapes.extraLarge.copy(bottomEnd = CornerSize(0), bottomStart = CornerSize(0)),
+    ) {
+        Scaffold(
+            topBar = {
+                AppActionBar(
+                    title = stringResource(R.string.note_list_screen_title), actions = listOf(
+                        Action(
+                            title = stringResource(R.string.search_action_title),
+                            icon = MaterialTheme.icons.search,
+                            onClick = onNavigateToSearch,
+                        ), Action(
+                            title = stringResource(R.string.settings_action_title),
+                            icon = MaterialTheme.icons.settings,
+                            onClick = onNavigateToSettings
+                        )
                     )
-                } else if (isFailed) {
-                    AlertDialog(
-                        onDismissRequest = {},
-                        title = {
-                            Text(
-                                text = stringResource(R.string.notes_loading_error),
-                                style = typography.titleLarge,
-                            )
-                        },
-                        text = {
-                            exception?.message?.let {
-                                Text(
-                                    text = it,
-                                    style = typography.bodyLarge,
-                                )
-                            }
-                        },
-                        confirmButton = {
-                            Button(onClick = { onSendIntent(NoteListIntent.GetAllNotesIntent) }) {
-                                Text(text = stringResource(R.string.try_again))
-                            }
-                        },
+                )
+            },
+            floatingActionButton = {
+                FloatingActionButton(
+                    onClick = onNavigateToEditor,
+                    containerColor = colorScheme.surface,
+                    contentColor = colorScheme.onSurface,
+                    shape = shapes.extraLarge,
+                ) {
+                    Icon(
+                        imageVector = MaterialTheme.icons.add,
+                        contentDescription = stringResource(R.string.create_note_icon_description),
                     )
-                } else {
-                    if (notes.isEmpty()) {
-                        ImageWithTextBelow(
-                            painter = painterResource(id = R.mipmap.pic_no_notes),
-                            imageDescription = stringResource(R.string.no_notes_message),
-                            text = stringResource(R.string.no_notes_message),
+                }
+            },
+            floatingActionButtonPosition = FabPosition.End,
+            snackbarHost = {
+                SnackbarHost(hostState = snackbarHostState)
+            },
+        ) { paddingValues ->
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues)
+            ) {
+                with(state) {
+                    if (isLoading) {
+                        CircularProgressIndicator(
                             modifier = Modifier.align(Alignment.Center),
                         )
-                    } else {
-                        NoteList(
-                            notes = notes,
-                            onClick = {
-                                onNavigateToNote(notes[it].note.id)
+                    } else if (isFailed) {
+                        AlertDialog(
+                            onDismissRequest = {},
+                            title = {
+                                Text(
+                                    text = stringResource(R.string.notes_loading_error),
+                                    style = typography.titleLarge,
+                                )
                             },
-                            onLongClick = {
-                                scope.launch {
-                                    scaffoldState.bottomSheetState.expand()
-                                    selectedNote = notes[it].note
+                            text = {
+                                exception?.message?.let {
+                                    Text(
+                                        text = it,
+                                        style = typography.bodyLarge,
+                                    )
                                 }
                             },
-                            onSendIntent = onSendIntent,
-                            modifier = Modifier.padding(MaterialTheme.spacing.small)
+                            confirmButton = {
+                                Button(onClick = { onSendIntent(NoteListIntent.GetAllNotesIntent) }) {
+                                    Text(text = stringResource(R.string.try_again))
+                                }
+                            },
                         )
+                    } else {
+                        if (notes.isEmpty()) {
+                            ImageWithTextBelow(
+                                painter = painterResource(id = R.mipmap.pic_no_notes),
+                                imageDescription = stringResource(R.string.no_notes_message),
+                                text = stringResource(R.string.no_notes_message),
+                                modifier = Modifier.align(Alignment.Center),
+                            )
+                        } else {
+                            NoteList(
+                                notes = notes,
+                                onClick = {
+                                    onNavigateToNote(notes[it].note.id)
+                                },
+                                onLongClick = {
+                                    scope.launch {
+                                        sheetState.show()
+                                        selectedNote = notes[it].note
+                                    }
+                                },
+                                onSendIntent = onSendIntent,
+                                modifier = Modifier.padding(MaterialTheme.spacing.small)
+                            )
+                        }
                     }
                 }
             }
