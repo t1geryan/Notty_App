@@ -7,8 +7,8 @@
     <!--Note List screen-->
     <string name="no_notes_message">Create your first note!</string>
     <string name="notes_loading_error">An error occurred while loading notes</string>
-    <string name="delete_note_label">Delete note</string>
-    <string name="share_note_label">Share note</string>
+    <string name="delete_note_label">Delete</string>
+    <string name="share_note_label">Share</string>
 
     <!--Search Screen-->
     <string name="no_notes_found_message">Note not found. Try searching again.</string>

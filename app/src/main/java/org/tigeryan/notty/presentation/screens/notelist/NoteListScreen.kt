@@ -115,6 +115,8 @@ fun NoteListScreen(
         },
         sheetState = sheetState,
         sheetShape = shapes.extraLarge.copy(bottomEnd = CornerSize(0), bottomStart = CornerSize(0)),
+        sheetBackgroundColor = colorScheme.background,
+        sheetContentColor = colorScheme.onBackground,
     ) {
         Scaffold(
             topBar = {
