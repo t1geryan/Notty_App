@@ -6,9 +6,12 @@ import androidx.lifecycle.viewModelScope
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
+import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import org.tigeryan.mvi.IntentReceiver
 import org.tigeryan.notty.domain.model.NoteData
@@ -26,6 +29,9 @@ class NoteViewModel @AssistedInject constructor(
 
     private val _state = MutableStateFlow(NoteState())
     val state get() = _state.asStateFlow()
+
+    private val _events = Channel<Event>(Channel.UNLIMITED, BufferOverflow.DROP_OLDEST)
+    val events = _events.receiveAsFlow()
 
     init {
         noteId?.let { id ->
@@ -76,11 +82,28 @@ class NoteViewModel @AssistedInject constructor(
     }
 
     private fun deleteNote() {
-        noteId?.let {
+        noteId?.let { id ->
             viewModelScope.launch {
-                deleteNoteUseCase(it)
+                _events.send(
+                    Event.ShowDeletionConfirmation(
+                        onConfirm = {
+                            viewModelScope.launch {
+                                deleteNoteUseCase(id)
+                                _events.send(Event.NavigateUp)
+                            }
+                        }
+                    )
+                )
             }
         }
+    }
+
+    sealed class Event {
+        object NavigateUp : Event()
+
+        data class ShowDeletionConfirmation(
+            val onConfirm: () -> Unit
+        ) : Event()
     }
 
     @AssistedFactory

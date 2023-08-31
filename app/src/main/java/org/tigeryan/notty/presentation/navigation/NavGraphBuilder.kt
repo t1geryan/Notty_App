@@ -63,9 +63,11 @@ internal fun NavGraphBuilder.noteScreen(
         val viewModel: NoteViewModel =
             viewModel(factory = NoteViewModel.provideFactory(factory, noteIdArgument?.toLong()))
         val state by viewModel.state.collectAsStateWithLifecycle()
+        val events = viewModel.events
         NoteScreen(
             state = state,
             onSendIntent = viewModel::receive,
+            eventsFlow = events,
             onNavigateUp = navController::navigateUp,
         )
     }

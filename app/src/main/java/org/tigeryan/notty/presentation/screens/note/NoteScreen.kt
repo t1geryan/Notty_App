@@ -7,6 +7,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.SnackbarHost
+import androidx.compose.material.SnackbarHostState
+import androidx.compose.material.SnackbarResult
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.colorScheme
@@ -16,6 +19,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -23,6 +28,8 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collectLatest
 import org.tigeryan.notty.R
 import org.tigeryan.notty.presentation.theme.icons
 import org.tigeryan.notty.presentation.views.Action
@@ -33,8 +40,11 @@ import org.tigeryan.notty.presentation.views.AppActionBar
 fun NoteScreen(
     state: NoteState,
     onSendIntent: (NoteIntent) -> Unit,
+    eventsFlow: Flow<NoteViewModel.Event>,
     onNavigateUp: () -> Unit,
 ) {
+    val snackbarHostState = remember { SnackbarHostState() }
+
     Scaffold(
         topBar = {
             AppActionBar(
@@ -51,11 +61,13 @@ fun NoteScreen(
                         icon = MaterialTheme.icons.delete,
                         onClick = {
                             onSendIntent(NoteIntent.DeleteNoteIntent)
-                            onNavigateUp()
                         },
                     )
                 )
             )
+        },
+        snackbarHost = {
+            SnackbarHost(hostState = snackbarHostState)
         },
     ) { paddingValues ->
         Box(
@@ -107,6 +119,22 @@ fun NoteScreen(
                         .fillMaxSize()
                         .focusRequester(focusRequester),
                 )
+            }
+        }
+    }
+
+    LaunchedEffect(key1 = Unit) {
+        eventsFlow.collectLatest { event ->
+            when (event) {
+                is NoteViewModel.Event.NavigateUp -> onNavigateUp()
+                is NoteViewModel.Event.ShowDeletionConfirmation -> {
+                    val snackbarResult = snackbarHostState.showSnackbar(
+                        message = "Are you sure you want to delete the note?",
+                        actionLabel = "Delete",
+                    )
+                    if (snackbarResult == SnackbarResult.ActionPerformed)
+                        event.onConfirm()
+                }
             }
         }
     }
