@@ -98,12 +98,12 @@ class NoteViewModel @AssistedInject constructor(
         }
     }
 
-    sealed class Event {
-        object NavigateUp : Event()
+    sealed interface Event {
+        object NavigateUp : Event
 
         data class ShowDeletionConfirmation(
             val onConfirm: () -> Unit
-        ) : Event()
+        ) : Event
     }
 
     @AssistedFactory
