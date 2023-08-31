@@ -29,6 +29,8 @@ class NoteListViewModel @Inject constructor(
     private val _events = Channel<Event>(Channel.UNLIMITED, BufferOverflow.DROP_OLDEST)
     val events = _events.receiveAsFlow()
 
+    private val noteBin = mutableListOf<Long>()
+
     init {
         fetchNotes()
     }
@@ -64,17 +66,18 @@ class NoteListViewModel @Inject constructor(
     private fun deleteNote(note: Note) {
         viewModelScope.launch {
             updateNoteVisibility(note.id, false)
+            noteBin.add(note.id)
             _events.send(
                 Event.ShowSnackbar(
                     message = R.string.deletion_undo_message,
                     actionTitle = R.string.undo,
                     onAction = {
                         updateNoteVisibility(note.id, true)
+                        noteBin.remove(note.id)
+                        clearNoteBin()
                     },
                     onDismiss = {
-                        viewModelScope.launch {
-                            deleteNoteUseCase(note.id)
-                        }
+                        clearNoteBin()
                     },
                 )
             )
@@ -90,6 +93,15 @@ class NoteListViewModel @Inject constructor(
                     else it
                 }
             )
+        }
+    }
+
+    private fun clearNoteBin() {
+        viewModelScope.launch {
+            noteBin.forEach {
+                deleteNoteUseCase(it)
+            }
+            noteBin.clear()
         }
     }
 
