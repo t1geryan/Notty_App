@@ -95,6 +95,7 @@ fun NoteListScreen(
                 ) {
                     Text(
                         text = it.noteData.title,
+                        style = MaterialTheme.typography.titleLarge,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                         textAlign = TextAlign.Center,
@@ -103,6 +104,15 @@ fun NoteListScreen(
                     )
                 }
             }
+            BottomSheetElement(
+                icon = MaterialTheme.icons.edit,
+                label = stringResource(R.string.edit_note_label),
+                onClick = {
+                    state.selectedNote?.let {
+                        onNavigateToNote(it.id)
+                    }
+                }
+            )
             BottomSheetElement(
                 icon = MaterialTheme.icons.share,
                 label = stringResource(R.string.share_note_label),

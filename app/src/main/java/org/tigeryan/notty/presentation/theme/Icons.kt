@@ -4,6 +4,7 @@ import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.Delete
+import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.ExpandLess
 import androidx.compose.material.icons.outlined.ExpandMore
 import androidx.compose.material.icons.outlined.Search
@@ -26,6 +27,7 @@ data class Icons(
     val expandMore: ImageVector = MaterialIcons.Outlined.ExpandMore,
     val expandLess: ImageVector = MaterialIcons.Outlined.ExpandLess,
     val share: ImageVector = MaterialIcons.Outlined.Share,
+    val edit: ImageVector = MaterialIcons.Outlined.Edit,
 )
 
 val LocalIcons = staticCompositionLocalOf { Icons() }
