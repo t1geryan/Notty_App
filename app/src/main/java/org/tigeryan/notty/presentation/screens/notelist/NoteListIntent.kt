@@ -8,4 +8,6 @@ sealed interface NoteListIntent : Intent {
     object GetAllNotesIntent : NoteListIntent
 
     data class DeleteNoteIntent(val note: Note) : NoteListIntent
+
+    data class SelectNoteIntent(val note: Note) : NoteListIntent
 }

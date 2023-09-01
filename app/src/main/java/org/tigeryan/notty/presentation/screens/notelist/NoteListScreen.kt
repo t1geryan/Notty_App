@@ -16,7 +16,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.material.DismissDirection
 import androidx.compose.material.DismissValue
@@ -42,10 +42,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -53,6 +51,8 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -67,7 +67,6 @@ import org.tigeryan.notty.presentation.views.ImageWithTextBelow
 import org.tigeryan.notty.presentation.views.NoteItem
 import org.tigeryan.notty.presentation.views.NottyDialog
 import org.tigeryan.notty.presentation.views.SwipeBackground
-import org.tigeryan.notty.utils.extensions.rememberMutableStateOf
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
@@ -86,15 +85,29 @@ fun NoteListScreen(
     val sheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
     val scope = rememberCoroutineScope()
 
-    var selectedNote: Note? by rememberMutableStateOf(value = null)
-
     ModalBottomSheetLayout(
         sheetContent = {
+            state.selectedNote?.let {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Text(
+                        text = it.noteData.title,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier
+                            .fillMaxWidth(0.5f),
+                    )
+                }
+            }
             BottomSheetElement(
                 icon = MaterialTheme.icons.share,
                 label = stringResource(R.string.share_note_label),
                 onClick = {
-                    selectedNote?.let {
+                    state.selectedNote?.let {
                         shareNote(context, it)
                     }
                 },
@@ -103,7 +116,7 @@ fun NoteListScreen(
                 icon = MaterialTheme.icons.delete,
                 label = stringResource(R.string.delete_note_label),
                 onClick = {
-                    selectedNote?.let {
+                    state.selectedNote?.let {
                         onSendIntent(NoteListIntent.DeleteNoteIntent(it))
                     }
                     scope.launch {
@@ -184,14 +197,11 @@ fun NoteListScreen(
                         } else {
                             NoteList(
                                 notes = notes,
-                                onClick = {
-                                    onNavigateToNote(notes[it].note.id)
+                                onClick = { note ->
+                                    onNavigateToNote(note.id)
                                 },
-                                onLongClick = {
-                                    scope.launch {
-                                        sheetState.show()
-                                        selectedNote = notes[it].note
-                                    }
+                                onLongClick = { note ->
+                                    onSendIntent(NoteListIntent.SelectNoteIntent(note))
                                 },
                                 onSendIntent = onSendIntent,
                                 modifier = Modifier.padding(MaterialTheme.spacing.small)
@@ -215,6 +225,10 @@ fun NoteListScreen(
                             SnackbarResult.ActionPerformed -> event.onAction()
                         }
                     }
+
+                    is NoteListViewModel.Event.ShowBottomSheetForNote -> {
+                        sheetState.show()
+                    }
                 }
             }
         }
@@ -225,17 +239,20 @@ fun NoteListScreen(
 @Composable
 private fun NoteList(
     notes: List<NoteItem>,
-    onLongClick: (Int) -> Unit,
-    onClick: (Int) -> Unit,
+    onLongClick: (Note) -> Unit,
+    onClick: (Note) -> Unit,
     onSendIntent: (NoteListIntent) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     LazyColumn(
         modifier = modifier
     ) {
-        itemsIndexed(items = notes, key = { _, noteItem ->
-            noteItem.note.id
-        }) { index, noteItem ->
+        items(
+            items = notes,
+            key = { noteItem ->
+                noteItem.note.id
+            }
+        ) { noteItem ->
             val note = noteItem.note
             if (noteItem.isVisible) {
                 val dismissState = rememberDismissState {
@@ -244,6 +261,7 @@ private fun NoteList(
                             onSendIntent(NoteListIntent.DeleteNoteIntent(note))
                             true
                         }
+
                         else -> false
                     }
                 }
@@ -282,10 +300,10 @@ private fun NoteList(
                                 .fillMaxWidth()
                                 .combinedClickable(
                                     onClick = {
-                                        onClick(index)
+                                        onClick(note)
                                     },
                                     onLongClick = {
-                                        onLongClick(index)
+                                        onLongClick(note)
                                     },
                                 ),
                         )

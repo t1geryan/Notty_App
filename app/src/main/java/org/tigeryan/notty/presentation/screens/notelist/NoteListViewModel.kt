@@ -39,6 +39,7 @@ class NoteListViewModel @Inject constructor(
         when (intent) {
             is NoteListIntent.GetAllNotesIntent -> fetchNotes()
             is NoteListIntent.DeleteNoteIntent -> deleteNote(intent.note)
+            is NoteListIntent.SelectNoteIntent -> selectNote(intent.note)
         }
     }
 
@@ -62,6 +63,14 @@ class NoteListViewModel @Inject constructor(
         }
     }
 
+    private fun selectNote(note: Note) {
+        _state.apply {
+            value = value.copy(selectedNote = note)
+            viewModelScope.launch {
+                _events.send(Event.ShowBottomSheetForNote(note))
+            }
+        }
+    }
 
     private fun deleteNote(note: Note) {
         viewModelScope.launch {
@@ -106,6 +115,10 @@ class NoteListViewModel @Inject constructor(
     }
 
     sealed interface Event {
+
+        data class ShowBottomSheetForNote(
+            val note: Note,
+        ) : Event
 
         data class ShowSnackbar(
             @StringRes val message: Int,
