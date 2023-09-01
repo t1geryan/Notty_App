@@ -105,12 +105,13 @@ class NoteListViewModel @Inject constructor(
         }
     }
 
-    sealed class Event {
+    sealed interface Event {
+
         data class ShowSnackbar(
             @StringRes val message: Int,
             @StringRes val actionTitle: Int,
             val onAction: () -> Unit = {},
             val onDismiss: () -> Unit = {},
-        ) : Event()
+        ) : Event
     }
 }

@@ -30,8 +30,6 @@ import androidx.compose.material.SnackbarResult
 import androidx.compose.material.SwipeToDismiss
 import androidx.compose.material.rememberDismissState
 import androidx.compose.material.rememberModalBottomSheetState
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
@@ -40,7 +38,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.MaterialTheme.shapes
-import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -65,8 +62,10 @@ import org.tigeryan.notty.presentation.theme.icons
 import org.tigeryan.notty.presentation.theme.spacing
 import org.tigeryan.notty.presentation.views.Action
 import org.tigeryan.notty.presentation.views.AppActionBar
+import org.tigeryan.notty.presentation.views.DialogCallbackTypes
 import org.tigeryan.notty.presentation.views.ImageWithTextBelow
 import org.tigeryan.notty.presentation.views.NoteItem
+import org.tigeryan.notty.presentation.views.NottyDialog
 import org.tigeryan.notty.presentation.views.SwipeBackground
 import org.tigeryan.notty.utils.extensions.rememberMutableStateOf
 
@@ -163,28 +162,17 @@ fun NoteListScreen(
                             modifier = Modifier.align(Alignment.Center),
                         )
                     } else if (isFailed) {
-                        AlertDialog(
-                            onDismissRequest = {},
-                            title = {
-                                Text(
-                                    text = stringResource(R.string.notes_loading_error),
-                                    style = typography.titleLarge,
-                                )
-                            },
-                            text = {
-                                exception?.message?.let {
-                                    Text(
-                                        text = it,
-                                        style = typography.bodyLarge,
-                                    )
-                                }
-                            },
-                            confirmButton = {
-                                Button(onClick = { onSendIntent(NoteListIntent.GetAllNotesIntent) }) {
-                                    Text(text = stringResource(R.string.try_again))
-                                }
-                            },
-                        )
+                        NottyDialog(
+                            title = stringResource(R.string.notes_loading_error),
+                            message = exception?.message
+                                ?: stringResource(id = R.string.unexpected_error_message),
+                            confirmButtonText = stringResource(R.string.try_again),
+                            isDismissible = false,
+                        ) { what ->
+                            if (what == DialogCallbackTypes.CONFIRM) {
+                                onSendIntent(NoteListIntent.GetAllNotesIntent)
+                            }
+                        }
                     } else {
                         if (notes.isEmpty()) {
                             ImageWithTextBelow(
