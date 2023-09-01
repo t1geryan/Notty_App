@@ -26,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import kotlinx.coroutines.flow.Flow
@@ -44,6 +45,7 @@ fun NoteScreen(
     onNavigateUp: () -> Unit,
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
+    val context = LocalContext.current
 
     Scaffold(
         topBar = {
@@ -129,8 +131,8 @@ fun NoteScreen(
                 is NoteViewModel.Event.NavigateUp -> onNavigateUp()
                 is NoteViewModel.Event.ShowDeletionConfirmation -> {
                     val snackbarResult = snackbarHostState.showSnackbar(
-                        message = "Are you sure you want to delete the note?",
-                        actionLabel = "Delete",
+                        message = context.getString(R.string.note_deletion_confirmation_message),
+                        actionLabel = context.getString(R.string.delete_note_action),
                     )
                     if (snackbarResult == SnackbarResult.ActionPerformed)
                         event.onConfirm()

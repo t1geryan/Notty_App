@@ -16,6 +16,8 @@
     <!--Note Screen-->
     <string name="title_input_hint">Title</string>
     <string name="text_input_hint">Text</string>
+    <string name="note_deletion_confirmation_message">Are you sure you want to delete the note?</string>
+    <string name="delete_note_action">Delete</string>
 
     <!--Settings Screen-->
     <string name="app_theme_setting_title">App Theme</string>
