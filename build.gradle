@@ -1,11 +1,18 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
     ext {
+        core_version='1.10.1'
+        activity_version='1.7.2'
         lifecycle_version = '2.6.1'
-        compose_material_version = '1.4.3'
-        nav_version = '2.6.0'
-        hilt_version = '2.44'
+        compose_material_version = '1.5.0'
+        nav_version = '2.7.1'
+        hilt_version = '2.47'
+        hilt_compose_version='1.0.0'
+        coroutines_version='1.7.3'
+        pref_datastore_version='1.0.0'
         room_version = '2.5.2'
+        kotlin_bom_version='1.8.0'
+        compose_bom_version='2022.10.00'
     }
 }
 
