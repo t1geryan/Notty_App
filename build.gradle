@@ -1,25 +1,50 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
     ext {
-        core_version='1.10.1'
-        activity_version='1.7.2'
+        core_version = '1.10.1'
+        activity_version = '1.7.2'
         lifecycle_version = '2.6.1'
         compose_material_version = '1.5.0'
         nav_version = '2.7.1'
         hilt_version = '2.47'
-        hilt_compose_version='1.0.0'
-        coroutines_version='1.7.3'
-        pref_datastore_version='1.0.0'
-        room_version = '2.5.2'
-        kotlin_bom_version='1.8.0'
-        compose_bom_version='2022.10.00'
+        hilt_compose_version = '1.0.0'
+        coroutines_version = '1.7.3'
+        pref_datastore_version = '1.0.0'
+        room_version = '2.6.1'
+        kotlin_bom_version = '1.8.0'
+        compose_bom_version = '2022.10.00'
+        detekt_version = "1.23.4"
     }
 }
 
 plugins {
-    id 'com.android.application' version '8.0.2' apply false
-    id 'com.android.library' version '8.0.2' apply false
+    id 'com.android.application' version '8.1.2' apply false
+    id 'com.android.library' version '8.1.2' apply false
     id 'com.google.dagger.hilt.android' version "$hilt_version" apply false
-    id 'org.jetbrains.kotlin.android' version '1.7.20' apply false
-    id 'org.jetbrains.kotlin.jvm' version '1.7.20' apply false
+    id 'org.jetbrains.kotlin.android' version '1.9.22' apply false
+    id 'org.jetbrains.kotlin.jvm' version '1.9.22' apply false
+    id 'io.gitlab.arturbosch.detekt' version "$detekt_version"
+}
+
+detekt {
+    toolVersion = "$detekt_version"
+    config.setFrom(file("config/detekt/detekt.yml"))
+    buildUponDefaultConfig = true
+    ignoreFailures = false
+}
+
+subprojects {
+    apply plugin: 'io.gitlab.arturbosch.detekt'
+
+    tasks.named("detekt").configure {
+        reports {
+            html.required.set(true)
+            html.outputLocation.set(file("build/reports/detekt.html"))
+            md.required.set(true)
+            md.outputLocation.set(file("build/reports/detekt.md"))
+            txt.required.set(false)
+            xml.required.set(false)
+            sarif.required.set(false)
+        }
+    }
 }
